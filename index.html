@@ -11,7 +11,7 @@
   
   <style>
     /* ==========================================================================
-       PALETA DE COLORES ORIGINAL GAMAN (#F0E3D2 | #D6C0A3 | #B99A73 | #8A6848 | #3A2A1C)
+       PALETA CLARA GAMAN (#F0E3D2 | #D6C0A3 | #B99A73 | #8A6848 | #3A2A1C)
        ========================================================================== */
     :root {
       --color-cream-light: #F0E3D2;
@@ -33,8 +33,8 @@
     }
 
     body {
-      background-color: var(--color-espresso-dark);
-      color: var(--color-cream-light);
+      background-color: var(--color-cream-light);
+      color: var(--color-espresso);
       font-family: var(--font-body);
       line-height: 1.6;
       overflow-x: hidden;
@@ -43,13 +43,12 @@
     /* Banner Superior */
     .top-announcement {
       background-color: var(--color-espresso);
-      color: var(--color-sand);
+      color: var(--color-cream-light);
       text-align: center;
       padding: 8px 16px;
       font-size: 0.85rem;
       font-weight: 500;
       letter-spacing: 0.05em;
-      border-bottom: 1px solid rgba(185, 154, 115, 0.2);
     }
 
     /* Header & Nav */
@@ -57,9 +56,9 @@
       position: sticky;
       top: 0;
       z-index: 100;
-      background-color: rgba(39, 28, 19, 0.95);
+      background-color: rgba(240, 227, 210, 0.95);
       backdrop-filter: blur(10px);
-      border-bottom: 1px solid rgba(185, 154, 115, 0.2);
+      border-bottom: 1px solid var(--color-sand);
     }
 
     .nav-container {
@@ -76,11 +75,11 @@
       font-size: 2rem;
       font-weight: 700;
       letter-spacing: 0.1em;
-      color: var(--color-cream-light);
+      color: var(--color-espresso);
     }
 
     .brand-logo span {
-      color: var(--color-bronze);
+      color: var(--color-brown-warm);
     }
 
     .nav-actions {
@@ -91,8 +90,8 @@
 
     .btn-mode-toggle {
       background-color: transparent;
-      border: 1px solid var(--color-bronze);
-      color: var(--color-sand);
+      border: 1px solid var(--color-brown-warm);
+      color: var(--color-espresso);
       padding: 8px 16px;
       border-radius: 4px;
       font-size: 0.85rem;
@@ -105,15 +104,15 @@
     }
 
     .btn-mode-toggle:hover {
-      background-color: var(--color-bronze);
-      color: var(--color-espresso-dark);
+      background-color: var(--color-brown-warm);
+      color: #fff;
     }
 
     .cart-trigger {
       position: relative;
       background: none;
       border: none;
-      color: var(--color-cream-light);
+      color: var(--color-espresso);
       cursor: pointer;
       padding: 8px;
       font-size: 1.2rem;
@@ -123,8 +122,8 @@
       position: absolute;
       top: -2px;
       right: -4px;
-      background-color: var(--color-bronze);
-      color: var(--color-espresso-dark);
+      background-color: var(--color-brown-warm);
+      color: #fff;
       font-size: 0.75rem;
       font-weight: 700;
       width: 20px;
@@ -137,9 +136,9 @@
 
     /* Hero Section */
     .hero-section {
-      background-color: var(--color-espresso);
+      background-color: #E6D7C3;
       padding: 60px 24px;
-      border-bottom: 1px solid rgba(185, 154, 115, 0.2);
+      border-bottom: 1px solid var(--color-sand);
     }
 
     .hero-container {
@@ -156,11 +155,11 @@
     }
 
     .hero-subtitle {
-      color: var(--color-bronze);
+      color: var(--color-brown-warm);
       text-transform: uppercase;
       letter-spacing: 0.15em;
       font-size: 0.85rem;
-      font-weight: 600;
+      font-weight: 700;
       margin-bottom: 12px;
     }
 
@@ -168,14 +167,14 @@
       font-family: var(--font-heading);
       font-size: 3.2rem;
       line-height: 1.1;
-      color: var(--color-cream-light);
+      color: var(--color-espresso);
       margin-bottom: 20px;
     }
 
     .hero-description {
-      color: var(--color-sand);
+      color: var(--color-brown-warm);
       font-size: 1.05rem;
-      font-weight: 300;
+      font-weight: 400;
       max-width: 480px;
     }
 
@@ -183,8 +182,8 @@
       position: relative;
       border-radius: 12px;
       overflow: hidden;
-      box-shadow: 0 20px 40px rgba(0,0,0,0.4);
-      background-color: #000;
+      box-shadow: 0 15px 30px rgba(58, 42, 28, 0.15);
+      background-color: #fff;
     }
 
     .hero-image-wrapper img {
@@ -218,27 +217,28 @@
     }
 
     .cat-btn {
-      background-color: rgba(58, 42, 28, 0.6);
-      border: 1px solid var(--color-brown-warm);
-      color: var(--color-sand);
+      background-color: #E6D7C3;
+      border: 1px solid var(--color-sand);
+      color: var(--color-espresso);
       padding: 8px 18px;
       border-radius: 30px;
       font-size: 0.9rem;
       cursor: pointer;
       white-space: nowrap;
       transition: var(--transition);
+      font-weight: 500;
     }
 
     .cat-btn.active, .cat-btn:hover {
-      background-color: var(--color-bronze);
-      color: var(--color-espresso-dark);
-      border-color: var(--color-bronze);
+      background-color: var(--color-espresso);
+      color: var(--color-cream-light);
+      border-color: var(--color-espresso);
     }
 
     .search-box input {
-      background-color: var(--color-espresso);
-      border: 1px solid var(--color-brown-warm);
-      color: var(--color-cream-light);
+      background-color: #fff;
+      border: 1px solid var(--color-sand);
+      color: var(--color-espresso);
       padding: 10px 16px;
       border-radius: 30px;
       font-size: 0.9rem;
@@ -253,18 +253,19 @@
     }
 
     .product-card {
-      background-color: var(--color-espresso);
+      background-color: #fff;
       border-radius: 12px;
       overflow: hidden;
-      border: 1px solid rgba(185, 154, 115, 0.15);
+      border: 1px solid var(--color-sand);
       transition: var(--transition);
       display: flex;
       flex-direction: column;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.03);
     }
 
     .product-card:hover {
       transform: translateY(-6px);
-      box-shadow: 0 12px 30px rgba(0,0,0,0.5);
+      box-shadow: 0 12px 24px rgba(58, 42, 28, 0.12);
       border-color: var(--color-bronze);
     }
 
@@ -272,7 +273,7 @@
       width: 100%;
       height: 320px;
       overflow: hidden;
-      background-color: #1a120c;
+      background-color: #f7f3ed;
       cursor: pointer;
     }
 
@@ -298,21 +299,22 @@
       font-size: 0.75rem;
       text-transform: uppercase;
       letter-spacing: 0.1em;
-      color: var(--color-bronze);
+      color: var(--color-brown-warm);
+      font-weight: 600;
       margin-bottom: 6px;
     }
 
     .product-title {
       font-family: var(--font-heading);
       font-size: 1.25rem;
-      color: var(--color-cream-light);
+      color: var(--color-espresso);
       margin-bottom: 8px;
     }
 
     .product-price {
       font-size: 1.2rem;
       font-weight: 700;
-      color: var(--color-sand);
+      color: var(--color-brown-warm);
       margin-bottom: 16px;
     }
 
@@ -324,8 +326,8 @@
 
     .btn-view-detail {
       background-color: transparent;
-      border: 1px solid var(--color-bronze);
-      color: var(--color-sand);
+      border: 1px solid var(--color-brown-warm);
+      color: var(--color-espresso);
       padding: 10px;
       border-radius: 6px;
       font-weight: 600;
@@ -335,12 +337,12 @@
     }
 
     .btn-view-detail:hover {
-      background-color: rgba(185, 154, 115, 0.15);
+      background-color: #E6D7C3;
     }
 
     .btn-add-cart {
-      background-color: var(--color-bronze);
-      color: var(--color-espresso-dark);
+      background-color: var(--color-espresso);
+      color: var(--color-cream-light);
       border: none;
       padding: 10px;
       border-radius: 6px;
@@ -351,7 +353,7 @@
     }
 
     .btn-add-cart:hover {
-      background-color: var(--color-sand);
+      background-color: var(--color-brown-warm);
     }
 
     /* Panel de Vendedor */
@@ -377,12 +379,12 @@
     .panel-title {
       font-family: var(--font-heading);
       font-size: 2.2rem;
-      color: var(--color-cream-light);
+      color: var(--color-espresso);
     }
 
     .btn-primary {
-      background-color: var(--color-bronze);
-      color: var(--color-espresso-dark);
+      background-color: var(--color-espresso);
+      color: var(--color-cream-light);
       border: none;
       padding: 10px 20px;
       border-radius: 6px;
@@ -390,10 +392,14 @@
       cursor: pointer;
     }
 
+    .btn-primary:hover {
+      background-color: var(--color-brown-warm);
+    }
+
     .btn-secondary {
       background-color: transparent;
-      border: 1px solid var(--color-bronze);
-      color: var(--color-sand);
+      border: 1px solid var(--color-espresso);
+      color: var(--color-espresso);
       padding: 10px 20px;
       border-radius: 6px;
       font-weight: 600;
@@ -403,20 +409,21 @@
     .seller-table {
       width: 100%;
       border-collapse: collapse;
-      background-color: var(--color-espresso);
+      background-color: #fff;
       border-radius: 8px;
       overflow: hidden;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
     }
 
     .seller-table th, .seller-table td {
       padding: 16px;
-      border-bottom: 1px solid rgba(185, 154, 115, 0.1);
+      border-bottom: 1px solid var(--color-sand);
       text-align: left;
     }
 
     .seller-table th {
-      background-color: rgba(0,0,0,0.3);
-      color: var(--color-bronze);
+      background-color: #E6D7C3;
+      color: var(--color-espresso);
     }
 
     .thumb-img {
@@ -433,7 +440,8 @@
       left: 0;
       width: 100%;
       height: 100%;
-      background-color: rgba(0, 0, 0, 0.85);
+      background-color: rgba(39, 28, 19, 0.6);
+      backdrop-filter: blur(4px);
       display: none;
       justify-content: center;
       align-items: center;
@@ -442,14 +450,15 @@
     }
 
     .modal-content {
-      background-color: var(--color-espresso);
-      border: 1px solid var(--color-bronze);
+      background-color: var(--color-cream-light);
+      border: 1px solid var(--color-sand);
       border-radius: 12px;
       width: 100%;
       max-width: 500px;
       max-height: 90vh;
       overflow-y: auto;
       padding: 30px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.2);
     }
 
     .modal-header {
@@ -462,7 +471,7 @@
     .close-modal {
       background: none;
       border: none;
-      color: var(--color-sand);
+      color: var(--color-espresso);
       font-size: 1.5rem;
       cursor: pointer;
     }
@@ -474,18 +483,23 @@
     .form-group label {
       display: block;
       font-size: 0.85rem;
-      color: var(--color-sand);
+      color: var(--color-espresso);
+      font-weight: 600;
       margin-bottom: 8px;
     }
 
     .form-group input, .form-group select, .form-group textarea {
       width: 100%;
-      background-color: rgba(0,0,0,0.3);
-      border: 1px solid var(--color-brown-warm);
-      color: var(--color-cream-light);
+      background-color: #fff;
+      border: 1px solid var(--color-sand);
+      color: var(--color-espresso);
       padding: 12px;
       border-radius: 6px;
       outline: none;
+    }
+
+    .form-group input::placeholder, .form-group textarea::placeholder {
+      color: #999;
     }
 
     /* Carrito Drawer */
@@ -496,13 +510,14 @@
       width: 100%;
       max-width: 380px;
       height: 100%;
-      background-color: var(--color-espresso);
-      border-left: 1px solid var(--color-bronze);
+      background-color: var(--color-cream-light);
+      border-left: 1px solid var(--color-sand);
       z-index: 1001;
       transition: var(--transition);
       display: flex;
       flex-direction: column;
       padding: 24px;
+      box-shadow: -10px 0 30px rgba(0,0,0,0.1);
     }
 
     .cart-drawer.active { right: 0; }
@@ -518,7 +533,7 @@
       gap: 12px;
       margin-bottom: 16px;
       padding-bottom: 16px;
-      border-bottom: 1px solid rgba(185, 154, 115, 0.1);
+      border-bottom: 1px solid var(--color-sand);
     }
 
     .cart-item img {
@@ -531,7 +546,7 @@
     /* Footer */
     footer {
       background-color: var(--color-espresso);
-      border-top: 1px solid rgba(185, 154, 115, 0.2);
+      border-top: 1px solid var(--color-sand);
       padding: 60px 24px 30px;
       color: var(--color-sand);
     }
@@ -550,7 +565,7 @@
       margin: 0 auto;
       text-align: center;
       padding-top: 30px;
-      border-top: 1px solid rgba(185, 154, 115, 0.1);
+      border-top: 1px solid rgba(214, 192, 163, 0.2);
       font-size: 0.85rem;
     }
   </style>
@@ -618,10 +633,10 @@
     </div>
 
     <!-- Número WhatsApp -->
-    <div style="margin-bottom: 24px; background: rgba(0,0,0,0.2); padding: 16px; border-radius: 8px;">
-      <label style="display: block; font-size: 0.85rem; color: var(--color-sand); margin-bottom: 8px;">Número de WhatsApp para ventas:</label>
+    <div style="margin-bottom: 24px; background: #E6D7C3; padding: 16px; border-radius: 8px;">
+      <label style="display: block; font-size: 0.85rem; color: var(--color-espresso); font-weight: 600; margin-bottom: 8px;">Número de WhatsApp para ventas:</label>
       <div style="display: flex; gap: 10px;">
-        <input type="text" id="sellerPhoneInput" placeholder="Ej: 5493811234567" style="flex: 1; padding: 10px; background: rgba(0,0,0,0.3); border: 1px solid var(--color-brown-warm); color: #fff; border-radius: 4px;">
+        <input type="text" id="sellerPhoneInput" placeholder="Ej: 5493811234567" style="flex: 1; padding: 10px; background: #fff; border: 1px solid var(--color-sand); color: var(--color-espresso); border-radius: 4px;">
         <button class="btn-primary" onclick="saveSellerPhone()">Guardar</button>
       </div>
     </div>
@@ -662,20 +677,20 @@
   <div class="modal-overlay" id="detailModal">
     <div class="modal-content" style="max-width: 550px;">
       <div class="modal-header">
-        <h3 id="detailTitle" style="font-family: var(--font-heading); font-size: 1.6rem;">Detalle del Producto</h3>
+        <h3 id="detailTitle" style="font-family: var(--font-heading); font-size: 1.6rem; color: var(--color-espresso);">Detalle del Producto</h3>
         <button class="close-modal" onclick="closeModal('detailModal')">&times;</button>
       </div>
-      <div style="margin-bottom: 16px; border-radius: 8px; overflow: hidden; height: 280px; background: #000;">
+      <div style="margin-bottom: 16px; border-radius: 8px; overflow: hidden; height: 280px; background: #f0e3d2;">
         <img id="detailImg" src="" style="width: 100%; height: 100%; object-fit: cover;">
       </div>
-      <div id="detailCategory" style="font-size: 0.8rem; text-transform: uppercase; color: var(--color-bronze); margin-bottom: 4px;"></div>
-      <div id="detailPrice" style="font-size: 1.4rem; font-weight: 700; color: var(--color-sand); margin-bottom: 12px;"></div>
+      <div id="detailCategory" style="font-size: 0.8rem; text-transform: uppercase; color: var(--color-brown-warm); font-weight: 700; margin-bottom: 4px;"></div>
+      <div id="detailPrice" style="font-size: 1.4rem; font-weight: 700; color: var(--color-espresso); margin-bottom: 12px;"></div>
       <div style="margin-bottom: 16px;">
-        <label style="font-size: 0.85rem; color: var(--color-bronze); font-weight: 600;">Descripción:</label>
-        <p id="detailDesc" style="color: var(--color-cream-light); font-size: 0.95rem; margin-top: 4px;"></p>
+        <label style="font-size: 0.85rem; color: var(--color-espresso); font-weight: 600;">Descripción:</label>
+        <p id="detailDesc" style="color: var(--color-espresso); font-size: 0.95rem; margin-top: 4px;"></p>
       </div>
       <div style="margin-bottom: 20px;">
-        <label style="font-size: 0.85rem; color: var(--color-bronze); font-weight: 600;">Talles Disponibles:</label>
+        <label style="font-size: 0.85rem; color: var(--color-espresso); font-weight: 600;">Talles Disponibles:</label>
         <div id="detailSizes" style="display: flex; gap: 8px; margin-top: 6px;"></div>
       </div>
       <button class="btn-primary" id="detailAddBtn" style="width: 100%;">Agregar al Carrito 🛒</button>
@@ -686,19 +701,19 @@
   <div class="modal-overlay" id="loginModal">
     <div class="modal-content" style="max-width: 380px;">
       <div class="modal-header">
-        <h3>Acceso Vendedor</h3>
+        <h3 style="color: var(--color-espresso);">Acceso Vendedor</h3>
         <button class="close-modal" onclick="closeModal('loginModal')">&times;</button>
       </div>
       <form onsubmit="submitLogin(event)">
         <div class="form-group">
           <label>Usuario</label>
-          <input type="text" id="loginUser" required placeholder="admin">
+          <input type="text" id="loginUser" required placeholder="Ingresar usuario">
         </div>
         <div class="form-group">
           <label>Contraseña</label>
-          <input type="password" id="loginPassword" required placeholder="gaman2026">
+          <input type="password" id="loginPassword" required placeholder="Ingresar contraseña">
         </div>
-        <p id="loginError" style="color: #ff6b6b; font-size: 0.85rem; display: none; margin-bottom: 12px;">Usuario o contraseña incorrectos.</p>
+        <p id="loginError" style="color: #d9534f; font-size: 0.85rem; display: none; margin-bottom: 12px;">Usuario o contraseña incorrectos.</p>
         <button type="submit" class="btn-primary" style="width: 100%;">Ingresar al Panel</button>
       </form>
     </div>
@@ -708,17 +723,17 @@
   <div class="modal-overlay" id="credentialsModal">
     <div class="modal-content" style="max-width: 380px;">
       <div class="modal-header">
-        <h3>Cambiar Credenciales</h3>
+        <h3 style="color: var(--color-espresso);">Cambiar Credenciales</h3>
         <button class="close-modal" onclick="closeModal('credentialsModal')">&times;</button>
       </div>
       <form onsubmit="saveNewCredentials(event)">
         <div class="form-group">
           <label>Nuevo Usuario</label>
-          <input type="text" id="newSellerUser" required>
+          <input type="text" id="newSellerUser" required placeholder="Ingresar nuevo usuario">
         </div>
         <div class="form-group">
           <label>Nueva Contraseña</label>
-          <input type="password" id="newSellerPass" required>
+          <input type="password" id="newSellerPass" required placeholder="Ingresar nueva contraseña">
         </div>
         <button type="submit" class="btn-primary" style="width: 100%;">Guardar Credenciales</button>
       </form>
@@ -729,7 +744,7 @@
   <div class="modal-overlay" id="productModal">
     <div class="modal-content">
       <div class="modal-header">
-        <h3 id="productModalTitle">Agregar Producto</h3>
+        <h3 id="productModalTitle" style="color: var(--color-espresso);">Agregar Producto</h3>
         <button class="close-modal" onclick="closeModal('productModal')">&times;</button>
       </div>
       <form onsubmit="saveProduct(event)">
@@ -771,7 +786,7 @@
   <div class="modal-overlay" id="categoriesModal">
     <div class="modal-content">
       <div class="modal-header">
-        <h3>Categorías</h3>
+        <h3 style="color: var(--color-espresso);">Categorías</h3>
         <button class="close-modal" onclick="closeModal('categoriesModal')">&times;</button>
       </div>
       <div class="form-group" style="display: flex; gap: 8px;">
@@ -786,7 +801,7 @@
   <div class="modal-overlay" id="heroEditModal">
     <div class="modal-content">
       <div class="modal-header">
-        <h3>Editar Hero &amp; Banner</h3>
+        <h3 style="color: var(--color-espresso);">Editar Hero &amp; Banner</h3>
         <button class="close-modal" onclick="closeModal('heroEditModal')">&times;</button>
       </div>
       <form onsubmit="saveHeroContent(event)">
@@ -823,7 +838,7 @@
   <div class="modal-overlay" id="footerEditModal">
     <div class="modal-content">
       <div class="modal-header">
-        <h3>Editar Footer</h3>
+        <h3 style="color: var(--color-espresso);">Editar Footer</h3>
         <button class="close-modal" onclick="closeModal('footerEditModal')">&times;</button>
       </div>
       <form onsubmit="saveFooterContent(event)">
@@ -855,12 +870,12 @@
   <!-- Carrito Drawer -->
   <div class="cart-drawer" id="cartDrawer">
     <div class="modal-header">
-      <h3>Carrito de Compras</h3>
+      <h3 style="color: var(--color-espresso);">Carrito de Compras</h3>
       <button class="close-modal" onclick="toggleCartDrawer()">&times;</button>
     </div>
     <div class="cart-items" id="cartItemsContainer"></div>
     <div>
-      <div style="display: flex; justify-content: space-between; margin-bottom: 16px; font-weight: 700;">
+      <div style="display: flex; justify-content: space-between; margin-bottom: 16px; font-weight: 700; color: var(--color-espresso);">
         <span>Total:</span>
         <span id="cartTotal">$0</span>
       </div>
@@ -995,8 +1010,8 @@
     }
 
     function openCredentialsModal() {
-      document.getElementById('newSellerUser').value = sellerUser;
-      document.getElementById('newSellerPass').value = sellerPassword;
+      document.getElementById('newSellerUser').value = '';
+      document.getElementById('newSellerPass').value = '';
       document.getElementById('credentialsModal').style.display = 'flex';
     }
 
@@ -1064,7 +1079,7 @@
       
       const sizesContainer = document.getElementById('detailSizes');
       sizesContainer.innerHTML = p.sizes.map(s => `
-        <span style="border: 1px solid var(--color-bronze); padding: 4px 10px; border-radius: 4px; font-size: 0.85rem; background: rgba(0,0,0,0.3);">${s}</span>
+        <span style="border: 1px solid var(--color-sand); padding: 4px 10px; border-radius: 4px; font-size: 0.85rem; background: #fff; color: var(--color-espresso); font-weight: 600;">${s}</span>
       `).join('');
 
       document.getElementById('detailAddBtn').onclick = function() {
@@ -1085,7 +1100,7 @@
           <td>$${p.price.toLocaleString('es-AR')}</td>
           <td>
             <button class="btn-secondary" style="padding: 4px 8px;" onclick="editProduct(${p.id})">✏️</button>
-            <button class="btn-secondary" style="padding: 4px 8px; color: #ff6b6b; border-color: #ff6b6b;" onclick="deleteProduct(${p.id})">🗑️</button>
+            <button class="btn-secondary" style="padding: 4px 8px; color: #d9534f; border-color: #d9534f;" onclick="deleteProduct(${p.id})">🗑️</button>
           </td>
         </tr>
       `).join('');
@@ -1240,9 +1255,9 @@
 
     function renderCategoriesList() {
       document.getElementById('categoriesList').innerHTML = categories.filter(c => c !== 'Todos').map(c => `
-        <li style="display: flex; justify-content: space-between; padding: 6px 0;">
+        <li style="display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid var(--color-sand);">
           <span>${c}</span>
-          <button class="btn-secondary" style="padding: 2px 6px; color: #ff6b6b;" onclick="removeCategory('${c}')">X</button>
+          <button class="btn-secondary" style="padding: 2px 6px; color: #d9534f; border-color: #d9534f;" onclick="removeCategory('${c}')">X</button>
         </li>
       `).join('');
     }
@@ -1289,8 +1304,8 @@
           <div class="cart-item">
             <img src="${i.image}">
             <div style="flex: 1;">
-              <h5>${i.name}</h5>
-              <div style="font-size: 0.85rem; color: var(--color-sand);">$${i.price.toLocaleString('es-AR')} x ${i.qty}</div>
+              <h5 style="color: var(--color-espresso);">${i.name}</h5>
+              <div style="font-size: 0.85rem; color: var(--color-brown-warm); font-weight: 600;">$${i.price.toLocaleString('es-AR')} x ${i.qty}</div>
             </div>
           </div>
         `;
