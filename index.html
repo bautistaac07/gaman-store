@@ -10,6 +10,9 @@
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   
   <style>
+    /* ==========================================================================
+       PALETA DE COLORES ORIGINAL GAMAN (#F0E3D2 | #D6C0A3 | #B99A73 | #8A6848 | #3A2A1C)
+       ========================================================================== */
     :root {
       --color-cream-light: #F0E3D2;
       --color-sand: #D6C0A3;
@@ -49,7 +52,7 @@
       border-bottom: 1px solid rgba(185, 154, 115, 0.2);
     }
 
-    /* Header */
+    /* Header & Nav */
     header {
       position: sticky;
       top: 0;
@@ -149,9 +152,7 @@
     }
 
     @media (max-width: 768px) {
-      .hero-container {
-        grid-template-columns: 1fr;
-      }
+      .hero-container { grid-template-columns: 1fr; }
     }
 
     .hero-subtitle {
@@ -272,6 +273,7 @@
       height: 320px;
       overflow: hidden;
       background-color: #1a120c;
+      cursor: pointer;
     }
 
     .product-image img {
@@ -314,8 +316,29 @@
       margin-bottom: 16px;
     }
 
+    .product-card-buttons {
+      display: flex;
+      gap: 8px;
+      margin-top: auto;
+    }
+
+    .btn-view-detail {
+      background-color: transparent;
+      border: 1px solid var(--color-bronze);
+      color: var(--color-sand);
+      padding: 10px;
+      border-radius: 6px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+      flex: 1;
+    }
+
+    .btn-view-detail:hover {
+      background-color: rgba(185, 154, 115, 0.15);
+    }
+
     .btn-add-cart {
-      width: 100%;
       background-color: var(--color-bronze);
       color: var(--color-espresso-dark);
       border: none;
@@ -324,7 +347,7 @@
       font-weight: 600;
       cursor: pointer;
       transition: var(--transition);
-      margin-top: auto;
+      flex: 1;
     }
 
     .btn-add-cart:hover {
@@ -339,13 +362,8 @@
       padding: 40px 24px;
     }
 
-    body.seller-mode-active .catalog-section {
-      display: none;
-    }
-
-    body.seller-mode-active .seller-panel {
-      display: block;
-    }
+    body.seller-mode-active .catalog-section { display: none; }
+    body.seller-mode-active .seller-panel { display: block; }
 
     .panel-header {
       display: flex;
@@ -487,9 +505,7 @@
       padding: 24px;
     }
 
-    .cart-drawer.active {
-      right: 0;
-    }
+    .cart-drawer.active { right: 0; }
 
     .cart-items {
       flex: 1;
@@ -597,6 +613,7 @@
         <button class="btn-secondary" onclick="openCategoriesModal()">📁 Categorías</button>
         <button class="btn-secondary" onclick="openHeroEditModal()">✏️ Editar Hero &amp; Banner</button>
         <button class="btn-secondary" onclick="openFooterEditModal()">📌 Editar Footer</button>
+        <button class="btn-secondary" onclick="openCredentialsModal()">🔑 Cambiar Credenciales</button>
       </div>
     </div>
 
@@ -641,20 +658,69 @@
     </div>
   </footer>
 
-  <!-- Modal Login -->
+  <!-- Modal Detalle de Producto (Cliente) -->
+  <div class="modal-overlay" id="detailModal">
+    <div class="modal-content" style="max-width: 550px;">
+      <div class="modal-header">
+        <h3 id="detailTitle" style="font-family: var(--font-heading); font-size: 1.6rem;">Detalle del Producto</h3>
+        <button class="close-modal" onclick="closeModal('detailModal')">&times;</button>
+      </div>
+      <div style="margin-bottom: 16px; border-radius: 8px; overflow: hidden; height: 280px; background: #000;">
+        <img id="detailImg" src="" style="width: 100%; height: 100%; object-fit: cover;">
+      </div>
+      <div id="detailCategory" style="font-size: 0.8rem; text-transform: uppercase; color: var(--color-bronze); margin-bottom: 4px;"></div>
+      <div id="detailPrice" style="font-size: 1.4rem; font-weight: 700; color: var(--color-sand); margin-bottom: 12px;"></div>
+      <div style="margin-bottom: 16px;">
+        <label style="font-size: 0.85rem; color: var(--color-bronze); font-weight: 600;">Descripción:</label>
+        <p id="detailDesc" style="color: var(--color-cream-light); font-size: 0.95rem; margin-top: 4px;"></p>
+      </div>
+      <div style="margin-bottom: 20px;">
+        <label style="font-size: 0.85rem; color: var(--color-bronze); font-weight: 600;">Talles Disponibles:</label>
+        <div id="detailSizes" style="display: flex; gap: 8px; margin-top: 6px;"></div>
+      </div>
+      <button class="btn-primary" id="detailAddBtn" style="width: 100%;">Agregar al Carrito 🛒</button>
+    </div>
+  </div>
+
+  <!-- Modal Login Vendedor -->
   <div class="modal-overlay" id="loginModal">
-    <div class="modal-content" style="max-width: 360px;">
+    <div class="modal-content" style="max-width: 380px;">
       <div class="modal-header">
         <h3>Acceso Vendedor</h3>
         <button class="close-modal" onclick="closeModal('loginModal')">&times;</button>
       </div>
       <form onsubmit="submitLogin(event)">
         <div class="form-group">
-          <label>Contraseña</label>
-          <input type="password" id="loginPassword" required>
+          <label>Usuario</label>
+          <input type="text" id="loginUser" required placeholder="admin">
         </div>
-        <p id="loginError" style="color: #ff6b6b; font-size: 0.85rem; display: none; margin-bottom: 12px;">Contraseña incorrecta (Usa: gaman2026)</p>
-        <button type="submit" class="btn-primary" style="width: 100%;">Ingresar</button>
+        <div class="form-group">
+          <label>Contraseña</label>
+          <input type="password" id="loginPassword" required placeholder="gaman2026">
+        </div>
+        <p id="loginError" style="color: #ff6b6b; font-size: 0.85rem; display: none; margin-bottom: 12px;">Usuario o contraseña incorrectos.</p>
+        <button type="submit" class="btn-primary" style="width: 100%;">Ingresar al Panel</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal Cambiar Credenciales -->
+  <div class="modal-overlay" id="credentialsModal">
+    <div class="modal-content" style="max-width: 380px;">
+      <div class="modal-header">
+        <h3>Cambiar Credenciales</h3>
+        <button class="close-modal" onclick="closeModal('credentialsModal')">&times;</button>
+      </div>
+      <form onsubmit="saveNewCredentials(event)">
+        <div class="form-group">
+          <label>Nuevo Usuario</label>
+          <input type="text" id="newSellerUser" required>
+        </div>
+        <div class="form-group">
+          <label>Nueva Contraseña</label>
+          <input type="password" id="newSellerPass" required>
+        </div>
+        <button type="submit" class="btn-primary" style="width: 100%;">Guardar Credenciales</button>
       </form>
     </div>
   </div>
@@ -683,6 +749,10 @@
         <div class="form-group">
           <label>Talles (ej: S, M, L)</label>
           <input type="text" id="prodSizes" required>
+        </div>
+        <div class="form-group">
+          <label>Descripción del producto</label>
+          <textarea id="prodDesc" rows="3" placeholder="Detalles de tela, confección, etc." required></textarea>
         </div>
         <div class="form-group">
           <label>Subir Imagen desde la computadora</label>
@@ -801,6 +871,7 @@
   <!-- JavaScript -->
   <script>
     let isSeller = false;
+    let sellerUser = 'admin';
     let sellerPassword = 'gaman2026';
     let sellerPhone = '5493811234567';
     let activeCategory = 'Todos';
@@ -814,7 +885,8 @@
         category: 'Remeras',
         price: 18500,
         sizes: ['S', 'M', 'L', 'XL'],
-        image: 'https://images.unsplash.com/photo-1521572267360-ee0c2909d518?auto=format&fit=crop&w=600&q=80'
+        image: 'https://images.unsplash.com/photo-1521572267360-ee0c2909d518?auto=format&fit=crop&w=600&q=80',
+        description: 'Confeccionada en algodón peinado 100% de 240g. Corte oversize contemporáneo con caída perfecta y costuras reforzadas.'
       },
       {
         id: 2,
@@ -822,7 +894,8 @@
         category: 'Camperas',
         price: 45000,
         sizes: ['M', 'L'],
-        image: 'https://images.unsplash.com/photo-1548883354-7622d03aca27?auto=format&fit=crop&w=600&q=80'
+        image: 'https://images.unsplash.com/photo-1548883354-7622d03aca27?auto=format&fit=crop&w=600&q=80',
+        description: 'Textil gabardina pesada de alta durabilidad. Bolsillos tácticos frontales y cierre reforzado ideal para uso urbano.'
       }
     ];
 
@@ -855,6 +928,8 @@
       localStorage.setItem('gaman_categories', JSON.stringify(categories));
       localStorage.setItem('gaman_phone', sellerPhone);
       localStorage.setItem('gaman_site_content', JSON.stringify(siteContent));
+      localStorage.setItem('gaman_user', sellerUser);
+      localStorage.setItem('gaman_pass', sellerPassword);
     }
 
     function loadFromLocalStorage() {
@@ -866,6 +941,11 @@
       if (ph) sellerPhone = ph;
       const s = localStorage.getItem('gaman_site_content');
       if (s) siteContent = JSON.parse(s);
+
+      const u = localStorage.getItem('gaman_user');
+      if (u) sellerUser = u;
+      const pass = localStorage.getItem('gaman_pass');
+      if (pass) sellerPassword = pass;
 
       document.getElementById('sellerPhoneInput').value = sellerPhone;
     }
@@ -897,16 +977,39 @@
 
     function submitLogin(e) {
       e.preventDefault();
-      if (document.getElementById('loginPassword').value === sellerPassword) {
+      const userVal = document.getElementById('loginUser').value.trim();
+      const passVal = document.getElementById('loginPassword').value.trim();
+
+      if (userVal === sellerUser && passVal === sellerPassword) {
         isSeller = true;
         document.body.classList.add('seller-mode-active');
         document.getElementById('modeToggleText').innerText = 'Salir de Vendedor';
         closeModal('loginModal');
+        document.getElementById('loginUser').value = '';
         document.getElementById('loginPassword').value = '';
         document.getElementById('loginError').style.display = 'none';
         renderSellerPanel();
       } else {
         document.getElementById('loginError').style.display = 'block';
+      }
+    }
+
+    function openCredentialsModal() {
+      document.getElementById('newSellerUser').value = sellerUser;
+      document.getElementById('newSellerPass').value = sellerPassword;
+      document.getElementById('credentialsModal').style.display = 'flex';
+    }
+
+    function saveNewCredentials(e) {
+      e.preventDefault();
+      const u = document.getElementById('newSellerUser').value.trim();
+      const p = document.getElementById('newSellerPass').value.trim();
+      if (u && p) {
+        sellerUser = u;
+        sellerPassword = p;
+        saveToLocalStorage();
+        alert('Credenciales actualizadas correctamente.');
+        closeModal('credentialsModal');
       }
     }
 
@@ -935,16 +1038,41 @@
 
       grid.innerHTML = filtered.map(p => `
         <div class="product-card">
-          <div class="product-image"><img src="${p.image}" alt="${p.name}"></div>
+          <div class="product-image" onclick="openDetailModal(${p.id})"><img src="${p.image}" alt="${p.name}"></div>
           <div class="product-info">
             <div class="product-category">${p.category}</div>
-            <h3 class="product-title">${p.name}</h3>
+            <h3 class="product-title" style="cursor:pointer;" onclick="openDetailModal(${p.id})">${p.name}</h3>
             <div class="product-price">$${p.price.toLocaleString('es-AR')}</div>
-            <div style="font-size: 0.8rem; color: var(--color-sand); margin-bottom: 12px;">Talles: ${p.sizes.join(', ')}</div>
-            <button class="btn-add-cart" onclick="addToCart(${p.id})">Agregar al Carrito</button>
+            <div class="product-card-buttons">
+              <button class="btn-view-detail" onclick="openDetailModal(${p.id})">Ver Detalle</button>
+              <button class="btn-add-cart" onclick="addToCart(${p.id})">Agregar 🛒</button>
+            </div>
           </div>
         </div>
       `).join('');
+    }
+
+    function openDetailModal(id) {
+      const p = products.find(item => item.id === id);
+      if (!p) return;
+
+      document.getElementById('detailTitle').innerText = p.name;
+      document.getElementById('detailImg').src = p.image;
+      document.getElementById('detailCategory').innerText = p.category;
+      document.getElementById('detailPrice').innerText = `$${p.price.toLocaleString('es-AR')}`;
+      document.getElementById('detailDesc').innerText = p.description || 'Sin descripción disponible.';
+      
+      const sizesContainer = document.getElementById('detailSizes');
+      sizesContainer.innerHTML = p.sizes.map(s => `
+        <span style="border: 1px solid var(--color-bronze); padding: 4px 10px; border-radius: 4px; font-size: 0.85rem; background: rgba(0,0,0,0.3);">${s}</span>
+      `).join('');
+
+      document.getElementById('detailAddBtn').onclick = function() {
+        addToCart(p.id);
+        closeModal('detailModal');
+      };
+
+      document.getElementById('detailModal').style.display = 'flex';
     }
 
     function renderSellerPanel() {
@@ -999,6 +1127,7 @@
         document.getElementById('prodName').value = '';
         document.getElementById('prodPrice').value = '';
         document.getElementById('prodSizes').value = '';
+        document.getElementById('prodDesc').value = '';
         document.getElementById('prodImgUrl').value = '';
         currentBase64Image = '';
         document.getElementById('productModalTitle').innerText = 'Agregar Producto';
@@ -1013,16 +1142,17 @@
       const category = document.getElementById('prodCategory').value;
       const price = parseFloat(document.getElementById('prodPrice').value);
       const sizes = document.getElementById('prodSizes').value.split(',').map(s => s.trim());
+      const desc = document.getElementById('prodDesc').value;
       const imgUrl = document.getElementById('prodImgUrl').value;
 
       const image = currentBase64Image || imgUrl || 'https://via.placeholder.com/300';
 
       if (id) {
         const idx = products.findIndex(p => p.id == id);
-        if (idx !== -1) products[idx] = { id: parseInt(id), name, category, price, sizes, image };
+        if (idx !== -1) products[idx] = { id: parseInt(id), name, category, price, sizes, description: desc, image };
       } else {
         const newId = products.length ? Math.max(...products.map(p => p.id)) + 1 : 1;
-        products.push({ id: newId, name, category, price, sizes, image });
+        products.push({ id: newId, name, category, price, sizes, description: desc, image });
       }
 
       saveToLocalStorage();
@@ -1041,6 +1171,7 @@
         document.getElementById('prodCategory').value = p.category;
         document.getElementById('prodPrice').value = p.price;
         document.getElementById('prodSizes').value = p.sizes.join(', ');
+        document.getElementById('prodDesc').value = p.description || '';
         document.getElementById('prodImgUrl').value = p.image.startsWith('data:') ? '' : p.image;
       }
     }
