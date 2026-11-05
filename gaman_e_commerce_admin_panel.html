@@ -1,0 +1,1393 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GAMAN | Exclusive Clothing & Lifestyle</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        gaman: {
+                            100: '#F0E3D2', // Light cream bg
+                            200: '#D6C0A3', // Light tan accent
+                            300: '#B99A73', // Medium tan
+                            400: '#8A6848', // Warm brown
+                            500: '#3A2A1C', // Deep espresso dark
+                        }
+                    },
+                    fontFamily: {
+                        serif: ['Playfair Display', 'serif'],
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            background-color: #F0E3D2;
+            color: #3A2A1C;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+        h1, h2, h3, .font-brand {
+            font-family: 'Playfair Display', serif;
+        }
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #F0E3D2;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #B99A73;
+            border-radius: 9999px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #8A6848;
+        }
+        .gaman-glass {
+            background: rgba(240, 227, 210, 0.85);
+            backdrop-filter: blur(10px);
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between selection:bg-[#8A6848] selection:text-white">
+
+    <!-- TOP ANNOUNCEMENT BAR -->
+    <div id="topAnnouncementBar" class="bg-[#3A2A1C] text-[#F0E3D2] text-xs py-2 px-4 text-center font-medium tracking-widest uppercase">
+        Envíos gratis a todo el país en compras superiores a $45.000 | 3 Cuotas sin interés
+    </div>
+
+    <!-- MAIN NAVBAR -->
+    <header class="sticky top-0 z-40 gaman-glass border-b border-[#D6C0A3]">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-20">
+                
+                <!-- Brand Logo -->
+                <div class="flex items-center space-x-3 cursor-pointer" onclick="switchMode('client'); filterCategory('all');">
+                    <h1 class="text-3xl sm:text-4xl font-extrabold tracking-widest text-[#3A2A1C] uppercase font-brand">
+                        GAMAN
+                    </h1>
+                </div>
+
+                <!-- Navigation Links & Search (Desktop) -->
+                <div class="hidden md:flex items-center space-x-6 flex-1 max-w-md mx-8">
+                    <div class="relative w-full">
+                        <input type="text" id="searchInput" oninput="handleSearch()" placeholder="Buscar prendas, camperas, remeras..." 
+                            class="w-full bg-[#D6C0A3]/30 border border-[#B99A73]/40 rounded-full py-2 pl-10 pr-4 text-sm text-[#3A2A1C] placeholder-[#8A6848]/70 focus:outline-none focus:border-[#3A2A1C]">
+                        <i data-lucide="search" class="w-4 h-4 text-[#8A6848] absolute left-3.5 top-2.5"></i>
+                    </div>
+                </div>
+
+                <!-- Mode Switch & Actions -->
+                <div class="flex items-center space-x-3 sm:space-x-4">
+                    <!-- Toggle Client / Seller View -->
+                    <button onclick="handleViewModeClick()" id="viewModeBtn" 
+                        class="flex items-center space-x-2 text-xs font-semibold uppercase tracking-wider px-3.5 py-2 rounded-full border border-[#8A6848] text-[#3A2A1C] hover:bg-[#3A2A1C] hover:text-[#F0E3D2] transition">
+                        <i data-lucide="user-check" class="w-4 h-4"></i>
+                        <span id="viewModeLabel" class="hidden sm:inline">Modo Vendedor</span>
+                    </button>
+
+                    <!-- Cart Button (Only on client mode) -->
+                    <button id="cartTriggerBtn" onclick="toggleCartDrawer()" class="relative p-2.5 rounded-full bg-[#3A2A1C] text-[#F0E3D2] hover:bg-[#8A6848] transition flex items-center justify-center">
+                        <i data-lucide="shopping-bag" class="w-5 h-5"></i>
+                        <span id="cartCountBadge" class="absolute -top-1 -right-1 bg-[#8A6848] text-white text-[10px] font-bold rounded-full h-5 w-5 flex items-center justify-center border-2 border-[#F0E3D2] scale-0 transition-transform">0</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Mobile Search Bar -->
+            <div class="pb-3 md:hidden">
+                <div class="relative w-full">
+                    <input type="text" id="searchInputMobile" oninput="handleSearchMobile()" placeholder="Buscar producto..." 
+                        class="w-full bg-[#D6C0A3]/30 border border-[#B99A73]/40 rounded-full py-2 pl-9 pr-4 text-sm text-[#3A2A1C] placeholder-[#8A6848]">
+                    <i data-lucide="search" class="w-4 h-4 text-[#8A6848] absolute left-3 top-2.5"></i>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- CLIENT STORE VIEW -->
+    <div id="clientView" class="flex-grow">
+        <!-- HERO BANNER -->
+        <section class="relative bg-[#3A2A1C] text-[#F0E3D2] py-16 px-4 sm:px-8 mb-10 overflow-hidden">
+            <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-8">
+                <div class="max-w-xl z-10 text-center md:text-left">
+                    <span id="heroSubtitleEl" class="text-xs uppercase tracking-widest text-[#B99A73] font-semibold">Nueva Colección 2026</span>
+                    <h2 id="heroTitleEl" class="text-4xl sm:text-6xl font-bold font-brand mt-2 mb-4 leading-tight">Elegancia & Resiliencia</h2>
+                    <p id="heroDescEl" class="text-[#D6C0A3] text-sm sm:text-base mb-6 font-light">
+                        Diseño minimalista confeccionado con textiles de calidad superior. Explorá prendas atemporales pensadas para perdurar.
+                    </p>
+                    <a href="#catalog" class="inline-block bg-[#B99A73] text-[#3A2A1C] font-semibold text-xs uppercase tracking-widest px-8 py-3.5 rounded-full hover:bg-[#D6C0A3] transition">
+                        Ver Catálogo
+                    </a>
+                </div>
+                <div class="w-full md:w-1/2 flex justify-center">
+                    <img id="heroImageEl" src="https://images.unsplash.com/photo-1490481651871-ab68de25d43d?auto=format&fit=crop&w=800&q=80" alt="GAMAN Hero" class="rounded-2xl shadow-2xl max-h-80 object-cover border border-[#8A6848]/30">
+                </div>
+            </div>
+        </section>
+
+        <!-- CATALOG SECTION -->
+        <section id="catalog" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
+            
+            <!-- Category Filter Tabs -->
+            <div class="flex items-center justify-between flex-wrap gap-4 mb-8 border-b border-[#D6C0A3] pb-4">
+                <div id="categoryTabsContainer" class="flex items-center space-x-2 overflow-x-auto pb-2 scrollbar-none w-full sm:w-auto">
+                    <!-- Categories dynamically generated -->
+                </div>
+                <div class="text-xs text-[#8A6848] font-medium" id="productCountLabel">
+                    Mostrando productos
+                </div>
+            </div>
+
+            <!-- Products Grid -->
+            <div id="productsGrid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                <!-- Dynamic Products Render Here -->
+            </div>
+
+            <!-- Empty State -->
+            <div id="emptyState" class="hidden text-center py-16">
+                <i data-lucide="package-open" class="w-12 h-12 text-[#8A6848] mx-auto mb-3"></i>
+                <h3 class="text-lg font-bold text-[#3A2A1C]">No se encontraron productos</h3>
+                <p class="text-xs text-[#8A6848] mt-1">Intenta buscar con otros términos o cambia la categoría.</p>
+            </div>
+        </section>
+    </div>
+
+    <!-- SELLER / ADMIN PANEL VIEW -->
+    <div id="sellerView" class="hidden flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div class="bg-[#D6C0A3]/20 border border-[#B99A73]/40 rounded-3xl p-6 sm:p-8 mb-8">
+            <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between pb-6 border-b border-[#B99A73]/30 mb-6 gap-4">
+                <div>
+                    <span class="text-xs uppercase font-bold tracking-widest text-[#8A6848]">Panel de Administración Protegido</span>
+                    <h2 class="text-3xl font-bold font-brand text-[#3A2A1C]">Gestión de Productos GAMAN</h2>
+                </div>
+                <div class="flex flex-wrap gap-3">
+                    <button onclick="openHeroBannerModal()" class="flex items-center space-x-2 bg-[#D6C0A3] text-[#3A2A1C] px-4 py-2.5 rounded-full text-xs font-bold uppercase tracking-wider hover:bg-[#B99A73] transition border border-[#B99A73]">
+                        <i data-lucide="layout" class="w-4 h-4"></i>
+                        <span>Editar Hero & Banner</span>
+                    </button>
+                    <button onclick="openCategoryManagerModal()" class="flex items-center space-x-2 bg-[#D6C0A3] text-[#3A2A1C] px-4 py-2.5 rounded-full text-xs font-bold uppercase tracking-wider hover:bg-[#B99A73] transition border border-[#B99A73]">
+                        <i data-lucide="tag" class="w-4 h-4"></i>
+                        <span>Editar Categorías</span>
+                    </button>
+                    <button onclick="openAdminSecurityModal()" class="flex items-center space-x-2 bg-[#D6C0A3] text-[#3A2A1C] px-4 py-2.5 rounded-full text-xs font-bold uppercase tracking-wider hover:bg-[#B99A73] transition border border-[#B99A73]">
+                        <i data-lucide="key" class="w-4 h-4"></i>
+                        <span>Cambiar Clave</span>
+                    </button>
+                    <button onclick="openProductModal()" class="flex items-center space-x-2 bg-[#3A2A1C] text-[#F0E3D2] px-5 py-2.5 rounded-full text-xs font-bold uppercase tracking-wider hover:bg-[#8A6848] transition">
+                        <i data-lucide="plus" class="w-4 h-4"></i>
+                        <span>Agregar Producto</span>
+                    </button>
+                    <button onclick="logoutAdmin()" class="flex items-center space-x-2 bg-red-900/80 text-white px-4 py-2.5 rounded-full text-xs font-bold uppercase tracking-wider hover:bg-red-900 transition">
+                        <i data-lucide="log-out" class="w-4 h-4"></i>
+                        <span>Cerrar Sesión</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Stats & Configuration Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+                <div class="bg-[#F0E3D2] p-5 rounded-2xl border border-[#B99A73]/40 shadow-sm flex items-center justify-between">
+                    <div>
+                        <p class="text-xs font-bold text-[#8A6848] uppercase">Total de Productos</p>
+                        <h3 id="statTotal" class="text-3xl font-black text-[#3A2A1C] mt-1 font-brand">0</h3>
+                    </div>
+                    <div class="p-3 bg-[#D6C0A3]/50 rounded-xl text-[#3A2A1C]">
+                        <i data-lucide="package" class="w-6 h-6"></i>
+                    </div>
+                </div>
+
+                <div class="bg-[#F0E3D2] p-5 rounded-2xl border border-[#B99A73]/40 shadow-sm flex items-center justify-between">
+                    <div>
+                        <p class="text-xs font-bold text-[#8A6848] uppercase">Categorías Activas</p>
+                        <h3 id="statCategories" class="text-3xl font-black text-[#3A2A1C] mt-1 font-brand">0</h3>
+                    </div>
+                    <div class="p-3 bg-[#D6C0A3]/50 rounded-xl text-[#3A2A1C]">
+                        <i data-lucide="tag" class="w-6 h-6"></i>
+                    </div>
+                </div>
+
+                <div class="bg-[#F0E3D2] p-5 rounded-2xl border border-[#B99A73]/40 shadow-sm">
+                    <p class="text-xs font-bold text-[#8A6848] uppercase mb-1">WhatsApp de Pedidos</p>
+                    <div class="flex items-center space-x-2 mt-2">
+                        <input type="text" id="sellerPhoneInput" placeholder="5491123456789" 
+                            class="w-full bg-[#D6C0A3]/20 border border-[#B99A73]/60 rounded-xl px-3 py-1.5 text-xs text-[#3A2A1C] font-mono focus:outline-none focus:border-[#3A2A1C]">
+                        <button onclick="savePhoneConfig(document.getElementById('sellerPhoneInput').value)" class="bg-[#3A2A1C] text-[#F0E3D2] px-3 py-1.5 rounded-xl text-xs font-bold uppercase hover:bg-[#8A6848] transition">
+                            Guardar
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Products Table -->
+            <div class="overflow-x-auto bg-[#F0E3D2] rounded-2xl border border-[#B99A73]/40 shadow-sm">
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr class="border-b border-[#D6C0A3] text-[10px] font-bold uppercase tracking-wider text-[#8A6848] bg-[#D6C0A3]/30">
+                            <th class="p-4">Imagen</th>
+                            <th class="p-4">Nombre</th>
+                            <th class="p-4">Categoría</th>
+                            <th class="p-4">Precio</th>
+                            <th class="p-4">Talles</th>
+                            <th class="p-4 text-right">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="sellerTableBody" class="divide-y divide-[#D6C0A3]/40">
+                        <!-- Products list injected here dynamically -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- EDIT HERO & BANNER MODAL -->
+    <div id="heroBannerModal" class="fixed inset-0 z-50 hidden bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
+        <div class="bg-[#F0E3D2] rounded-3xl max-w-lg w-full p-6 sm:p-8 border border-[#D6C0A3] shadow-2xl relative my-8">
+            <button onclick="closeHeroBannerModal()" class="absolute top-4 right-4 text-[#3A2A1C] hover:text-[#8A6848]">
+                <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+            
+            <h3 class="text-2xl font-bold font-brand text-[#3A2A1C] mb-6">Editar Banner Superior & Hero</h3>
+            
+            <form onsubmit="handleHeroBannerSubmit(event)" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-bold uppercase text-[#8A6848] mb-1">Texto Banner Superior (Anuncios)</label>
+                    <input type="text" id="editTopAnnouncement" required 
+                        class="w-full bg-[#D6C0A3]/20 border border-[#B99A73]/60 rounded-xl px-3.5 py-2 text-sm text-[#3A2A1C] focus:outline-none focus:border-[#3A2A1C]">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold uppercase text-[#8A6848] mb-1">Subtítulo Hero (Ej: NUEVA COLECCIÓN 2026)</label>
+                    <input type="text" id="editHeroSubtitle" required 
+                        class="w-full bg-[#D6C0A3]/20 border border-[#B99A73]/60 rounded-xl px-3.5 py-2 text-sm text-[#3A2A1C] focus:outline-none focus:border-[#3A2A1C]">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold uppercase text-[#8A6848] mb-1">Título Principal Hero (Ej: Elegancia & Resiliencia)</label>
+                    <input type="text" id="editHeroTitle" required 
+                        class="w-full bg-[#D6C0A3]/20 border border-[#B99A73]/60 rounded-xl px-3.5 py-2 text-sm text-[#3A2A1C] focus:outline-none focus:border-[#3A2A1C]">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold uppercase text-[#8A6848] mb-1">Descripción del Hero</label>
+                    <textarea id="editHeroDesc" rows="3" required 
+                        class="w-full bg-[#D6C0A3]/20 border border-[#B99A73]/60 rounded-xl px-3.5 py-2 text-sm text-[#3A2A1C] focus:outline-none focus:border-[#3A2A1C]"></textarea>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold uppercase text-[#8A6848] mb-1">Imagen del Hero</label>
+                    <div class="space-y-2">
+                        <div class="flex items-center justify-center w-full">
+                            <label for="heroFile" class="flex flex-col items-center justify-center w-full h-20 border-2 border-[#B99A73] border-dashed rounded-xl cursor-pointer bg-[#D6C0A3]/20 hover:bg-[#D6C0A3]/40 transition">
+                                <div class="flex flex-col items-center justify-center pt-2 pb-2">
+                                    <i data-lucide="upload-cloud" class="w-5 h-5 text-[#8A6848] mb-1"></i>
+                                    <p class="text-xs font-semibold text-[#3A2A1C]">Subir foto desde la computadora</p>
+                                </div>
+                                <input id="heroFile" type="file" accept="image/*" onchange="handleHeroFileSelect(event)" class="hidden" />
+                            </label>
+                        </div>
+                        <input type="url" id="editHeroImageUrl" placeholder="https://..." 
+                            class="w-full bg-[#D6C0A3]/20 border border-[#B99A73]/60 rounded-xl px-3.5 py-2 text-sm text-[#3A2A1C] focus:outline-none focus:border-[#3A2A1C]">
+                        
+                        <div id="heroImagePreviewContainer" class="hidden flex items-center space-x-3 pt-2">
+                            <img id="heroImagePreview" src="" class="w-16 h-12 object-cover rounded-xl border border-[#B99A73]">
+                            <span class="text-xs text-[#8A6848] font-medium">Vista previa de la imagen Hero</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="pt-4 flex justify-end space-x-3">
+                    <button type="button" onclick="closeHeroBannerModal()" class="px-5 py-2.5 rounded-full text-xs font-semibold text-[#8A6848] border border-[#B99A73] hover:bg-[#D6C0A3]">Cancelar</button>
+                    <button type="submit" class="px-6 py-2.5 rounded-full text-xs font-bold uppercase tracking-wider bg-[#3A2A1C] text-[#F0E3D2] hover:bg-[#8A6848] transition">Guardar Cambios</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- LOGIN MODAL (ADMIN ONLY) -->
+    <div id="loginModal" class="fixed inset-0 z-50 hidden bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-[#F0E3D2] rounded-3xl max-w-sm w-full p-6 sm:p-8 border border-[#D6C0A3] shadow-2xl relative">
+            <button onclick="closeLoginModal()" class="absolute top-4 right-4 text-[#3A2A1C] hover:text-[#8A6848]">
+                <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+            
+            <div class="text-center mb-6">
+                <div class="w-12 h-12 bg-[#3A2A1C] text-[#F0E3D2] rounded-full flex items-center justify-center mx-auto mb-3">
+                    <i data-lucide="lock" class="w-6 h-6"></i>
+                </div>
+                <h3 class="text-2xl font-bold font-brand text-[#3A2A1C]">Acceso Vendedor</h3>
+                <p class="text-xs text-[#8A6848] mt-1">Ingresá tus credenciales para administrar la tienda.</p>
+            </div>
+            
+            <form onsubmit="handleLoginSubmit(event)" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-bold uppercase text-[#8A6848] mb-1">Usuario</label>
+                    <input type="text" id="loginUser" required placeholder="Ej: admin" 
+                        class="w-full bg-[#D6C0A3]/20 border border-[#B99A73]/60 rounded-xl px-3.5 py-2 text-sm text-[#3A2A1C] focus:outline-none focus:border-[#3A2A1C]">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold uppercase text-[#8A6848] mb-1">Contraseña</label>
+                    <input type="password" id="loginPass" required placeholder="••••••••" 
+                        class="w-full bg-[#D6C0A3]/20 border border-[#B99A73]/60 rounded-xl px-3.5 py-2 text-sm text-[#3A2A1C] focus:outline-none focus:border-[#3A2A1C]">
+                </div>
+
+                <p id="loginErrorMsg" class="text-xs text-red-700 font-bold hidden text-center">Usuario o contraseña incorrectos.</p>
+
+                <div class="pt-2">
+                    <button type="submit" class="w-full bg-[#3A2A1C] text-[#F0E3D2] py-3 rounded-full text-xs font-bold uppercase tracking-wider hover:bg-[#8A6848] transition">
+                        Iniciar Sesión
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- CATEGORY MANAGER MODAL -->
+    <div id="categoryModal" class="fixed inset-0 z-50 hidden bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-[#F0E3D2] rounded-3xl max-w-md w-full p-6 sm:p-8 border border-[#D6C0A3] shadow-2xl relative">
+            <button onclick="closeCategoryModal()" class="absolute top-4 right-4 text-[#3A2A1C] hover:text-[#8A6848]">
+                <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+
+            <h3 class="text-2xl font-bold font-brand text-[#3A2A1C] mb-4">Administrar Categorías</h3>
+
+            <div class="flex gap-2 mb-6">
+                <input type="text" id="newCategoryInput" placeholder="Nueva categoría (ej: Calzados)" 
+                    class="flex-1 bg-[#D6C0A3]/20 border border-[#B99A73]/60 rounded-xl px-3.5 py-2 text-sm text-[#3A2A1C] focus:outline-none focus:border-[#3A2A1C]">
+                <button onclick="addCategory()" class="bg-[#3A2A1C] text-[#F0E3D2] px-4 py-2 rounded-xl text-xs font-bold uppercase hover:bg-[#8A6848] transition">
+                    Agregar
+                </button>
+            </div>
+
+            <div class="space-y-2 max-h-60 overflow-y-auto pr-1" id="categoriesList">
+                <!-- Categories listed dynamically -->
+            </div>
+        </div>
+    </div>
+
+    <!-- CHANGE PASSWORD MODAL -->
+    <div id="adminSecurityModal" class="fixed inset-0 z-50 hidden bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-[#F0E3D2] rounded-3xl max-w-sm w-full p-6 sm:p-8 border border-[#D6C0A3] shadow-2xl relative">
+            <button onclick="closeAdminSecurityModal()" class="absolute top-4 right-4 text-[#3A2A1C] hover:text-[#8A6848]">
+                <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+
+            <h3 class="text-2xl font-bold font-brand text-[#3A2A1C] mb-4">Cambiar Credenciales</h3>
+
+            <form onsubmit="handleChangeCredentials(event)" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-bold uppercase text-[#8A6848] mb-1">Nuevo Usuario</label>
+                    <input type="text" id="newAdminUser" required 
+                        class="w-full bg-[#D6C0A3]/20 border border-[#B99A73]/60 rounded-xl px-3.5 py-2 text-sm text-[#3A2A1C] focus:outline-none focus:border-[#3A2A1C]">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold uppercase text-[#8A6848] mb-1">Nueva Contraseña</label>
+                    <input type="password" id="newAdminPass" required 
+                        class="w-full bg-[#D6C0A3]/20 border border-[#B99A73]/60 rounded-xl px-3.5 py-2 text-sm text-[#3A2A1C] focus:outline-none focus:border-[#3A2A1C]">
+                </div>
+
+                <div class="pt-2">
+                    <button type="submit" class="w-full bg-[#3A2A1C] text-[#F0E3D2] py-3 rounded-full text-xs font-bold uppercase tracking-wider hover:bg-[#8A6848] transition">
+                        Guardar Cambios
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- PRODUCT DETAIL & PURCHASE MODAL (CLIENT) -->
+    <div id="productDetailModal" class="fixed inset-0 z-50 hidden bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-[#F0E3D2] rounded-3xl max-w-2xl w-full overflow-hidden border border-[#D6C0A3] shadow-2xl relative animate-fadeIn">
+            <button onclick="closeDetailModal()" class="absolute top-4 right-4 z-10 w-8 h-8 rounded-full bg-[#3A2A1C] text-[#F0E3D2] flex items-center justify-center hover:bg-[#8A6848] transition">
+                <i data-lucide="x" class="w-4 h-4"></i>
+            </button>
+            <div id="detailModalContent" class="grid grid-cols-1 md:grid-cols-2">
+                <!-- Content injected dynamically -->
+            </div>
+        </div>
+    </div>
+
+    <!-- ADD/EDIT PRODUCT MODAL (SELLER) -->
+    <div id="sellerModal" class="fixed inset-0 z-50 hidden bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
+        <div class="bg-[#F0E3D2] rounded-3xl max-w-lg w-full p-6 sm:p-8 border border-[#D6C0A3] shadow-2xl relative my-8">
+            <button onclick="closeSellerModal()" class="absolute top-4 right-4 text-[#3A2A1C] hover:text-[#8A6848]">
+                <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+            
+            <h3 id="sellerModalTitle" class="text-2xl font-bold font-brand text-[#3A2A1C] mb-6">Agregar Producto</h3>
+            
+            <form id="productForm" onsubmit="handleProductSubmit(event)" class="space-y-4">
+                <input type="hidden" id="editProductId">
+
+                <div>
+                    <label class="block text-xs font-bold uppercase text-[#8A6848] mb-1">Nombre del Producto</label>
+                    <input type="text" id="prodName" required placeholder="Ej: Campera Oversize Beige" 
+                        class="w-full bg-[#D6C0A3]/20 border border-[#B99A73]/60 rounded-xl px-3.5 py-2 text-sm text-[#3A2A1C] focus:outline-none focus:border-[#3A2A1C]">
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-bold uppercase text-[#8A6848] mb-1">Categoría</label>
+                        <select id="prodCategory" required class="w-full bg-[#D6C0A3]/20 border border-[#B99A73]/60 rounded-xl px-3.5 py-2 text-sm text-[#3A2A1C] focus:outline-none focus:border-[#3A2A1C]">
+                            <!-- Options rendered dynamically based on categories -->
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold uppercase text-[#8A6848] mb-1">Precio ($ ARS)</label>
+                        <input type="number" id="prodPrice" required placeholder="24500" 
+                            class="w-full bg-[#D6C0A3]/20 border border-[#B99A73]/60 rounded-xl px-3.5 py-2 text-sm text-[#3A2A1C] focus:outline-none focus:border-[#3A2A1C]">
+                    </div>
+                </div>
+
+                <!-- Imagen del Producto: Archivo o URL -->
+                <div>
+                    <label class="block text-xs font-bold uppercase text-[#8A6848] mb-1">Imagen del Producto</label>
+                    <div class="space-y-2">
+                        <!-- Carga desde archivo local -->
+                        <div class="flex items-center justify-center w-full">
+                            <label for="prodFile" class="flex flex-col items-center justify-center w-full h-24 border-2 border-[#B99A73] border-dashed rounded-xl cursor-pointer bg-[#D6C0A3]/20 hover:bg-[#D6C0A3]/40 transition">
+                                <div class="flex flex-col items-center justify-center pt-2 pb-2">
+                                    <i data-lucide="upload-cloud" class="w-6 h-6 text-[#8A6848] mb-1"></i>
+                                    <p class="text-xs font-semibold text-[#3A2A1C]">Seleccionar foto desde la computadora</p>
+                                    <p class="text-[10px] text-[#8A6848]">PNG, JPG, WEBP (Se guardará localmente)</p>
+                                </div>
+                                <input id="prodFile" type="file" accept="image/*" onchange="handleFileSelect(event)" class="hidden" />
+                            </label>
+                        </div>
+
+                        <!-- O pegar URL directa -->
+                        <div class="relative">
+                            <span class="text-[10px] uppercase font-bold text-[#8A6848] block text-center my-1">- o pega una URL -</span>
+                            <input type="url" id="prodImage" placeholder="https://images.unsplash.com/..." 
+                                class="w-full bg-[#D6C0A3]/20 border border-[#B99A73]/60 rounded-xl px-3.5 py-2 text-sm text-[#3A2A1C] focus:outline-none focus:border-[#3A2A1C]">
+                        </div>
+
+                        <!-- Previsualización -->
+                        <div id="imagePreviewContainer" class="hidden flex items-center space-x-3 pt-2">
+                            <img id="imagePreview" src="" class="w-14 h-14 object-cover rounded-xl border border-[#B99A73]">
+                            <span class="text-xs text-[#8A6848] font-medium">Vista previa de la imagen</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold uppercase text-[#8A6848] mb-1">Talles Disponibles (separados por coma)</label>
+                    <input type="text" id="prodSizes" required placeholder="S, M, L, XL" 
+                        class="w-full bg-[#D6C0A3]/20 border border-[#B99A73]/60 rounded-xl px-3.5 py-2 text-sm text-[#3A2A1C] focus:outline-none focus:border-[#3A2A1C]">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold uppercase text-[#8A6848] mb-1">Descripción</label>
+                    <textarea id="prodDesc" rows="3" required placeholder="Confeccionado en algodón frizado con terminaciones premium..." 
+                        class="w-full bg-[#D6C0A3]/20 border border-[#B99A73]/60 rounded-xl px-3.5 py-2 text-sm text-[#3A2A1C] focus:outline-none focus:border-[#3A2A1C]"></textarea>
+                </div>
+
+                <div class="pt-4 flex justify-end space-x-3">
+                    <button type="button" onclick="closeSellerModal()" class="px-5 py-2.5 rounded-full text-xs font-semibold text-[#8A6848] border border-[#B99A73] hover:bg-[#D6C0A3]">Cancelar</button>
+                    <button type="submit" class="px-6 py-2.5 rounded-full text-xs font-bold uppercase tracking-wider bg-[#3A2A1C] text-[#F0E3D2] hover:bg-[#8A6848] transition">Guardar Producto</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- CART SLIDE-OUT DRAWER -->
+    <div id="cartDrawer" class="fixed inset-0 z-50 hidden">
+        <div class="absolute inset-0 bg-black/50 backdrop-blur-sm" onclick="toggleCartDrawer()"></div>
+        <div class="absolute right-0 top-0 bottom-0 max-w-md w-full bg-[#F0E3D2] border-l border-[#D6C0A3] shadow-2xl flex flex-col">
+            <!-- Header -->
+            <div class="p-6 border-b border-[#D6C0A3] flex items-center justify-between">
+                <div class="flex items-center space-x-2">
+                    <i data-lucide="shopping-bag" class="w-5 h-5 text-[#3A2A1C]"></i>
+                    <h3 class="text-xl font-bold font-brand text-[#3A2A1C]">Tu Carrito</h3>
+                </div>
+                <button onclick="toggleCartDrawer()" class="text-[#3A2A1C] hover:text-[#8A6848]">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+
+            <!-- Items List -->
+            <div id="cartItemsList" class="flex-grow overflow-y-auto p-6 space-y-4">
+                <!-- Cart items rendered here -->
+            </div>
+
+            <!-- Cart Footer -->
+            <div class="p-6 border-t border-[#D6C0A3] bg-[#D6C0A3]/30 space-y-4">
+                <div class="flex items-center justify-between text-base font-bold text-[#3A2A1C]">
+                    <span>Subtotal</span>
+                    <span id="cartSubtotal">$0</span>
+                </div>
+                <p class="text-xs text-[#8A6848]">El pedido se enviará formateado a WhatsApp para coordinar pago y entrega.</p>
+                <button onclick="checkoutWhatsApp()" class="w-full bg-[#3A2A1C] text-[#F0E3D2] py-3.5 rounded-full font-bold uppercase text-xs tracking-wider flex items-center justify-center space-x-2 hover:bg-[#8A6848] transition shadow-lg">
+                    <i data-lucide="message-square" class="w-4 h-4"></i>
+                    <span>Finalizar Pedido por WhatsApp</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="bg-[#3A2A1C] text-[#F0E3D2] pt-12 pb-8 border-t border-[#8A6848]/30">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 pb-8 border-b border-[#8A6848]/30">
+                <div>
+                    <h2 class="text-3xl font-brand font-bold tracking-widest uppercase mb-3">GAMAN</h2>
+                    <p class="text-xs text-[#D6C0A3] leading-relaxed max-w-sm">
+                        Indumentaria urbana contemporánea. Diseñada para resaltar la fuerza interior con simplicidad estética.
+                    </p>
+                </div>
+                <div>
+                    <h4 class="text-xs font-bold uppercase tracking-widest text-[#B99A73] mb-3">Navegación</h4>
+                    <ul class="space-y-2 text-xs text-[#D6C0A3]">
+                        <li><a href="#" onclick="filterCategory('Remeras')" class="hover:text-white">Remeras & Tops</a></li>
+                        <li><a href="#" onclick="filterCategory('Pantalones')" class="hover:text-white">Pantalones</a></li>
+                        <li><a href="#" onclick="filterCategory('Camperas')" class="hover:text-white">Camperas & Sweaters</a></li>
+                        <li><a href="#" onclick="filterCategory('Accesorios')" class="hover:text-white">Accesorios Exclusivos</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-xs font-bold uppercase tracking-widest text-[#B99A73] mb-3">Atención al Cliente</h4>
+                    <p class="text-xs text-[#D6C0A3] mb-2">WhatsApp: +54 9 11 2345-6789</p>
+                    <p class="text-xs text-[#D6C0A3] mb-4">Email: hola@gamanstore.com</p>
+                    <div class="flex space-x-4">
+                        <a href="#" class="text-[#D6C0A3] hover:text-white"><i data-lucide="instagram" class="w-5 h-5"></i></a>
+                        <a href="#" class="text-[#D6C0A3] hover:text-white"><i data-lucide="facebook" class="w-5 h-5"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="pt-6 text-center text-xs text-[#B99A73]">
+                &copy; 2026 GAMAN Store. Todos los derechos reservados.
+            </div>
+        </div>
+    </footer>
+
+    <!-- TOAST NOTIFICATION -->
+    <div id="toast" class="fixed bottom-6 right-6 z-50 hidden bg-[#3A2A1C] text-[#F0E3D2] px-5 py-3 rounded-2xl shadow-xl flex items-center space-x-3 text-xs font-medium border border-[#B99A73]">
+        <i data-lucide="check-circle" class="w-4 h-4 text-[#B99A73]"></i>
+        <span id="toastMsg">Mensaje de prueba</span>
+    </div>
+
+    <!-- MAIN JAVASCRIPT APP LOGIC -->
+    <script>
+        // Initial Default Catalog
+        const initialProducts = [
+            {
+                id: 1,
+                name: "Campera Minimalist Earth",
+                category: "Camperas",
+                price: 58000,
+                image: "https://images.unsplash.com/photo-1548883354-7622d03aca27?auto=format&fit=crop&w=800&q=80",
+                sizes: ["S", "M", "L", "XL"],
+                description: "Campera confeccionada en paño premium de tono tierra. Corte estructurado con botones mate y bolsillos ocultos."
+            },
+            {
+                id: 2,
+                name: "Remera Oversize Heavy Cotton",
+                category: "Remeras",
+                price: 24500,
+                image: "https://images.unsplash.com/photo-1521572267360-ee0c2909d518?auto=format&fit=crop&w=800&q=80",
+                sizes: ["S", "M", "L", "XL"],
+                description: "Remera confeccionada en 100% algodón pesado de 240g. Caída impecable y cuello reforzado."
+            },
+            {
+                id: 3,
+                name: "Pantalon Tailored Cream",
+                category: "Pantalones",
+                price: 49000,
+                image: "https://images.unsplash.com/photo-1624378439575-d8705ad7ae80?auto=format&fit=crop&w=800&q=80",
+                sizes: ["S", "M", "L"],
+                description: "Pantalón de vestir tiro alto con pinzas en tono crema suave. Tela fluida de altísima calidad."
+            },
+            {
+                id: 4,
+                name: "Sweater Knit Beige GAMAN",
+                category: "Camperas",
+                price: 46000,
+                image: "https://images.unsplash.com/photo-1576995853123-5a10305d93c0?auto=format&fit=crop&w=800&q=80",
+                sizes: ["M", "L", "XL"],
+                description: "Sweater de punto acanalado grueso con hilo tacto suave en tono moca claro. Diseño exclusivo."
+            },
+            {
+                id: 5,
+                name: "Gorra Wool Signature Cap",
+                category: "Accesorios",
+                price: 18500,
+                image: "https://images.unsplash.com/photo-1588850561407-ed78c282e89b?auto=format&fit=crop&w=800&q=80",
+                sizes: ["Único"],
+                description: "Gorra de lana con broche metálico regulable y bordado tipográfico minimalista al tono."
+            },
+            {
+                id: 6,
+                name: "Pantalon Cargo Warm Mocha",
+                category: "Pantalones",
+                price: 52000,
+                image: "https://images.unsplash.com/photo-1517445312882-bc9910d016b7?auto=format&fit=crop&w=800&q=80",
+                sizes: ["S", "M", "L", "XL"],
+                description: "Pantalón cargo relaxed fit con bolsillos laterales y ajustadores en los tobillos."
+            }
+        ];
+
+        const initialCategories = ["Remeras", "Pantalones", "Camperas", "Accesorios"];
+
+        // Global State variables
+        let products = [];
+        let categories = [];
+        let cart = [];
+        let activeCategory = 'all';
+        let currentMode = 'client'; // 'client' or 'seller'
+        let sellerPhone = '5491123456789';
+        let uploadedBase64Image = '';
+        let uploadedHeroBase64Image = '';
+
+        // Site Content Settings
+        let siteContent = {
+            topAnnouncement: "Envíos gratis a todo el país en compras superiores a $45.000 | 3 Cuotas sin interés",
+            heroSubtitle: "Nueva Colección 2026",
+            heroTitle: "Elegancia & Resiliencia",
+            heroDesc: "Diseño minimalista confeccionado con textiles de calidad superior. Explorá prendas atemporales pensadas para perdurar.",
+            heroImage: "https://images.unsplash.com/photo-1490481651871-ab68de25d43d?auto=format&fit=crop&w=800&q=80"
+        };
+
+        // Authentication State
+        let isLoggedIn = false;
+        let adminCredentials = {
+            user: "admin",
+            pass: "gaman2026"
+        };
+
+        // Init App
+        window.onload = function() {
+            loadFromLocalStorage();
+            applySiteContentUI();
+            renderCategoryTabs();
+            renderCatalog();
+            renderSellerTable();
+            updateCartUI();
+            lucide.createIcons();
+        };
+
+        // LocalStorage & State Loading
+        function loadFromLocalStorage() {
+            // Load Site Content Settings
+            const savedContent = localStorage.getItem('gaman_site_content');
+            if (savedContent) {
+                try { siteContent = { ...siteContent, ...JSON.parse(savedContent) }; } catch(e) {}
+            }
+
+            // Load Credentials
+            const savedCreds = localStorage.getItem('gaman_creds');
+            if (savedCreds) {
+                try { adminCredentials = JSON.parse(savedCreds); } catch(e) {}
+            }
+
+            // Load Categories
+            const savedCats = localStorage.getItem('gaman_categories');
+            if (savedCats) {
+                try { categories = JSON.parse(savedCats); } catch(e) { categories = [...initialCategories]; }
+            } else {
+                categories = [...initialCategories];
+                localStorage.setItem('gaman_categories', JSON.stringify(categories));
+            }
+
+            // Load Phone
+            const savedPhone = localStorage.getItem('gaman_phone');
+            if (savedPhone) sellerPhone = savedPhone;
+
+            // Load Cart
+            const savedCart = localStorage.getItem('gaman_cart');
+            if (savedCart) {
+                try { cart = JSON.parse(savedCart); } catch(e) { cart = []; }
+            }
+
+            // Load Products
+            const savedProducts = localStorage.getItem('gaman_products');
+            if (savedProducts) {
+                try { products = JSON.parse(savedProducts); } catch(e) { products = [...initialProducts]; }
+            } else {
+                products = [...initialProducts];
+                localStorage.setItem('gaman_products', JSON.stringify(products));
+            }
+        }
+
+        function applySiteContentUI() {
+            document.getElementById('topAnnouncementBar').textContent = siteContent.topAnnouncement;
+            document.getElementById('heroSubtitleEl').textContent = siteContent.heroSubtitle;
+            document.getElementById('heroTitleEl').textContent = siteContent.heroTitle;
+            document.getElementById('heroDescEl').textContent = siteContent.heroDesc;
+            document.getElementById('heroImageEl').src = siteContent.heroImage;
+        }
+
+        // Hero & Banner Manager
+        function openHeroBannerModal() {
+            document.getElementById('editTopAnnouncement').value = siteContent.topAnnouncement;
+            document.getElementById('editHeroSubtitle').value = siteContent.heroSubtitle;
+            document.getElementById('editHeroTitle').value = siteContent.heroTitle;
+            document.getElementById('editHeroDesc').value = siteContent.heroDesc;
+            document.getElementById('editHeroImageUrl').value = siteContent.heroImage.startsWith('data:') ? '' : siteContent.heroImage;
+            
+            uploadedHeroBase64Image = '';
+            showHeroPreview(siteContent.heroImage);
+            document.getElementById('heroBannerModal').classList.remove('hidden');
+        }
+
+        function closeHeroBannerModal() {
+            document.getElementById('heroBannerModal').classList.add('hidden');
+        }
+
+        function handleHeroFileSelect(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    uploadedHeroBase64Image = event.target.result;
+                    document.getElementById('editHeroImageUrl').value = '';
+                    showHeroPreview(uploadedHeroBase64Image);
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function showHeroPreview(src) {
+            const container = document.getElementById('heroImagePreviewContainer');
+            const img = document.getElementById('heroImagePreview');
+            if (src) {
+                img.src = src;
+                container.classList.remove('hidden');
+            } else {
+                container.classList.add('hidden');
+            }
+        }
+
+        function handleHeroBannerSubmit(e) {
+            e.preventDefault();
+            
+            const topAnnouncement = document.getElementById('editTopAnnouncement').value;
+            const heroSubtitle = document.getElementById('editHeroSubtitle').value;
+            const heroTitle = document.getElementById('editHeroTitle').value;
+            const heroDesc = document.getElementById('editHeroDesc').value;
+            const urlImage = document.getElementById('editHeroImageUrl').value;
+
+            let finalHeroImage = uploadedHeroBase64Image || urlImage || siteContent.heroImage;
+
+            siteContent = {
+                topAnnouncement,
+                heroSubtitle,
+                heroTitle,
+                heroDesc,
+                heroImage: finalHeroImage
+            };
+
+            localStorage.setItem('gaman_site_content', JSON.stringify(siteContent));
+            applySiteContentUI();
+            closeHeroBannerModal();
+            showToast("Contenido principal de la tienda actualizado");
+        }
+
+        function saveProductsToStorage() {
+            localStorage.setItem('gaman_products', JSON.stringify(products));
+        }
+
+        function saveCartToStorage() {
+            localStorage.setItem('gaman_cart', JSON.stringify(cart));
+        }
+
+        function saveCategoriesToStorage() {
+            localStorage.setItem('gaman_categories', JSON.stringify(categories));
+        }
+
+        function savePhoneConfig(val) {
+            sellerPhone = val.replace(/[^0-9]/g, '');
+            localStorage.setItem('gaman_phone', sellerPhone);
+            showToast("Número de WhatsApp guardado");
+        }
+
+        // Mode Switching & Auth
+        function handleViewModeClick() {
+            if (currentMode === 'seller') {
+                switchMode('client');
+            } else {
+                if (isLoggedIn) {
+                    switchMode('seller');
+                } else {
+                    openLoginModal();
+                }
+            }
+        }
+
+        function openLoginModal() {
+            document.getElementById('loginErrorMsg').classList.add('hidden');
+            document.getElementById('loginModal').classList.remove('hidden');
+        }
+
+        function closeLoginModal() {
+            document.getElementById('loginModal').classList.add('hidden');
+        }
+
+        function handleLoginSubmit(e) {
+            e.preventDefault();
+            const u = document.getElementById('loginUser').value.trim();
+            const p = document.getElementById('loginPass').value.trim();
+
+            if (u === adminCredentials.user && p === adminCredentials.pass) {
+                isLoggedIn = true;
+                closeLoginModal();
+                switchMode('seller');
+                showToast("¡Bienvenido al panel del vendedor!");
+            } else {
+                document.getElementById('loginErrorMsg').classList.remove('hidden');
+            }
+        }
+
+        function logoutAdmin() {
+            isLoggedIn = false;
+            switchMode('client');
+            showToast("Sesión cerrada correctamente");
+        }
+
+        function openAdminSecurityModal() {
+            document.getElementById('newAdminUser').value = adminCredentials.user;
+            document.getElementById('newAdminPass').value = adminCredentials.pass;
+            document.getElementById('adminSecurityModal').classList.remove('hidden');
+        }
+
+        function closeAdminSecurityModal() {
+            document.getElementById('adminSecurityModal').classList.add('hidden');
+        }
+
+        function handleChangeCredentials(e) {
+            e.preventDefault();
+            const newUser = document.getElementById('newAdminUser').value.trim();
+            const newPass = document.getElementById('newAdminPass').value.trim();
+
+            if (newUser && newPass) {
+                adminCredentials = { user: newUser, pass: newPass };
+                localStorage.setItem('gaman_creds', JSON.stringify(adminCredentials));
+                closeAdminSecurityModal();
+                showToast("Credenciales de administrador actualizadas");
+            }
+        }
+
+        function switchMode(mode) {
+            currentMode = mode;
+            const clientView = document.getElementById('clientView');
+            const sellerView = document.getElementById('sellerView');
+            const viewModeLabel = document.getElementById('viewModeLabel');
+            const cartTriggerBtn = document.getElementById('cartTriggerBtn');
+
+            if (mode === 'seller') {
+                clientView.classList.add('hidden');
+                sellerView.classList.remove('hidden');
+                viewModeLabel.textContent = "Ver Tienda Cliente";
+                cartTriggerBtn.classList.add('hidden');
+                renderSellerTable();
+            } else {
+                sellerView.classList.add('hidden');
+                clientView.classList.remove('hidden');
+                viewModeLabel.textContent = "Modo Vendedor";
+                cartTriggerBtn.classList.remove('hidden');
+                renderCategoryTabs();
+                renderCatalog();
+            }
+            lucide.createIcons();
+        }
+
+        // Category Management
+        function renderCategoryTabs() {
+            const container = document.getElementById('categoryTabsContainer');
+            container.innerHTML = `
+                <button onclick="filterCategory('all')" class="cat-tab px-4 py-2 rounded-full text-xs font-semibold tracking-wider uppercase border border-[#3A2A1C] bg-[#3A2A1C] text-[#F0E3D2] transition">
+                    Todos
+                </button>
+                ${categories.map(cat => `
+                    <button onclick="filterCategory('${cat}')" class="cat-tab px-4 py-2 rounded-full text-xs font-semibold tracking-wider uppercase border border-[#B99A73] text-[#3A2A1C] hover:bg-[#D6C0A3] transition">
+                        ${cat}
+                    </button>
+                `).join('')}
+            `;
+        }
+
+        function openCategoryManagerModal() {
+            renderCategoryManagerList();
+            document.getElementById('categoryModal').classList.remove('hidden');
+        }
+
+        function closeCategoryModal() {
+            document.getElementById('categoryModal').classList.add('hidden');
+        }
+
+        function renderCategoryManagerList() {
+            const list = document.getElementById('categoriesList');
+            list.innerHTML = categories.map((cat, idx) => `
+                <div class="flex items-center justify-between bg-[#D6C0A3]/30 px-4 py-2.5 rounded-xl border border-[#B99A73]/40">
+                    <span class="text-xs font-bold text-[#3A2A1C]">${cat}</span>
+                    <button onclick="deleteCategory(${idx})" class="text-red-800 hover:text-red-900 text-xs font-bold p-1">
+                        <i data-lucide="trash-2" class="w-4 h-4"></i>
+                    </button>
+                </div>
+            `).join('');
+            lucide.createIcons();
+        }
+
+        function addCategory() {
+            const input = document.getElementById('newCategoryInput');
+            const newCat = input.value.trim();
+            if (newCat && !categories.includes(newCat)) {
+                categories.push(newCat);
+                saveCategoriesToStorage();
+                input.value = '';
+                renderCategoryManagerList();
+                renderCategoryTabs();
+                showToast(`Categoría "${newCat}" agregada`);
+            }
+        }
+
+        function deleteCategory(idx) {
+            const deleted = categories[idx];
+            categories.splice(idx, 1);
+            saveCategoriesToStorage();
+            renderCategoryManagerList();
+            renderCategoryTabs();
+            showToast(`Categoría "${deleted}" eliminada`);
+        }
+
+        // Catalog Rendering & Filtering
+        function filterCategory(cat) {
+            activeCategory = cat;
+            
+            const tabs = document.querySelectorAll('.cat-tab');
+            tabs.forEach(tab => {
+                if (tab.textContent.trim().toLowerCase() === cat.toLowerCase() || (cat === 'all' && tab.textContent.trim().toLowerCase() === 'todos')) {
+                    tab.className = "cat-tab px-4 py-2 rounded-full text-xs font-semibold tracking-wider uppercase border border-[#3A2A1C] bg-[#3A2A1C] text-[#F0E3D2] transition";
+                } else {
+                    tab.className = "cat-tab px-4 py-2 rounded-full text-xs font-semibold tracking-wider uppercase border border-[#B99A73] text-[#3A2A1C] hover:bg-[#D6C0A3] transition";
+                }
+            });
+
+            renderCatalog();
+        }
+
+        function handleSearch() {
+            const query = document.getElementById('searchInput').value.toLowerCase();
+            renderCatalog(query);
+        }
+
+        function handleSearchMobile() {
+            const query = document.getElementById('searchInputMobile').value.toLowerCase();
+            renderCatalog(query);
+        }
+
+        function renderCatalog(searchQuery = '') {
+            const grid = document.getElementById('productsGrid');
+            const emptyState = document.getElementById('emptyState');
+            const countLabel = document.getElementById('productCountLabel');
+
+            let filtered = products;
+
+            if (activeCategory !== 'all') {
+                filtered = filtered.filter(p => p.category.toLowerCase() === activeCategory.toLowerCase());
+            }
+
+            if (searchQuery) {
+                filtered = filtered.filter(p => p.name.toLowerCase().includes(searchQuery) || p.description.toLowerCase().includes(searchQuery));
+            }
+
+            countLabel.textContent = `Mostrando ${filtered.length} prenda(s)`;
+
+            if (filtered.length === 0) {
+                grid.innerHTML = '';
+                emptyState.classList.remove('hidden');
+                return;
+            }
+
+            emptyState.classList.add('hidden');
+            grid.innerHTML = filtered.map(p => `
+                <div class="bg-[#F0E3D2] border border-[#D6C0A3] rounded-3xl overflow-hidden shadow-sm hover:shadow-xl transition group flex flex-col justify-between">
+                    <div>
+                        <div class="relative overflow-hidden aspect-[4/5] bg-[#D6C0A3]/30">
+                            <img src="${p.image}" alt="${p.name}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500" onerror="this.src='https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&w=800&q=80'">
+                            <span class="absolute top-3 left-3 bg-[#3A2A1C]/80 text-[#F0E3D2] text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wider backdrop-blur-md">${p.category}</span>
+                        </div>
+                        <div class="p-5">
+                            <h3 class="font-bold text-base text-[#3A2A1C] font-brand group-hover:text-[#8A6848] transition line-clamp-1">${p.name}</h3>
+                            <p class="text-xs text-[#8A6848] mt-1 line-clamp-2 font-light">${p.description}</p>
+                            
+                            <div class="flex items-center space-x-1.5 mt-3">
+                                ${p.sizes.map(s => `<span class="text-[10px] font-semibold px-2 py-0.5 rounded border border-[#B99A73]/60 text-[#8A6848]">${s}</span>`).join('')}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="px-5 pb-5 pt-0 flex items-center justify-between border-t border-[#D6C0A3]/40 mt-3">
+                        <span class="text-lg font-extrabold text-[#3A2A1C]">$${p.price.toLocaleString('es-AR')}</span>
+                        <button onclick="openDetailModal(${p.id})" class="p-2.5 rounded-full bg-[#3A2A1C] text-[#F0E3D2] hover:bg-[#8A6848] transition flex items-center justify-center">
+                            <i data-lucide="eye" class="w-4 h-4"></i>
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+
+            lucide.createIcons();
+        }
+
+        // Product Detail Modal
+        function openDetailModal(id) {
+            const p = products.find(prod => prod.id === id);
+            if (!p) return;
+
+            const modalContent = document.getElementById('detailModalContent');
+            const defaultSize = p.sizes.length > 0 ? p.sizes[0] : 'U';
+
+            modalContent.innerHTML = `
+                <div class="bg-[#D6C0A3]/20 aspect-[4/5] md:aspect-auto">
+                    <img src="${p.image}" class="w-full h-full object-cover" onerror="this.src='https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&w=800&q=80'">
+                </div>
+                <div class="p-6 sm:p-8 flex flex-col justify-between space-y-4">
+                    <div>
+                        <span class="text-xs font-bold uppercase tracking-widest text-[#8A6848]">${p.category}</span>
+                        <h2 class="text-2xl font-bold font-brand text-[#3A2A1C] mt-1">${p.name}</h2>
+                        <p class="text-2xl font-extrabold text-[#3A2A1C] mt-2">$${p.price.toLocaleString('es-AR')}</p>
+                        <p class="text-xs text-[#8A6848] mt-4 leading-relaxed font-light">${p.description}</p>
+
+                        <div class="mt-6">
+                            <label class="block text-xs font-bold uppercase text-[#8A6848] mb-2">Seleccionar Talle</label>
+                            <div class="flex flex-wrap gap-2" id="sizeSelector">
+                                ${p.sizes.map((s, idx) => `
+                                    <button type="button" onclick="selectModalSize(this, '${s}')" class="size-btn px-3.5 py-1.5 rounded-xl text-xs font-bold border ${idx === 0 ? 'bg-[#3A2A1C] text-[#F0E3D2] border-[#3A2A1C]' : 'border-[#B99A73] text-[#3A2A1C] hover:bg-[#D6C0A3]'} transition">
+                                        ${s}
+                                    </button>
+                                `).join('')}
+                            </div>
+                        </div>
+                    </div>
+
+                    <button onclick="addToCartFromModal(${p.id})" class="w-full bg-[#3A2A1C] text-[#F0E3D2] py-3.5 rounded-full font-bold uppercase text-xs tracking-wider flex items-center justify-center space-x-2 hover:bg-[#8A6848] transition shadow-lg mt-4">
+                        <i data-lucide="shopping-bag" class="w-4 h-4"></i>
+                        <span>Agregar al Carrito</span>
+                    </button>
+                </div>
+            `;
+
+            modalContent.dataset.selectedSize = defaultSize;
+            document.getElementById('productDetailModal').classList.remove('hidden');
+            lucide.createIcons();
+        }
+
+        function selectModalSize(btn, size) {
+            const container = document.getElementById('sizeSelector');
+            container.querySelectorAll('.size-btn').forEach(b => {
+                b.className = "size-btn px-3.5 py-1.5 rounded-xl text-xs font-bold border border-[#B99A73] text-[#3A2A1C] hover:bg-[#D6C0A3] transition";
+            });
+            btn.className = "size-btn px-3.5 py-1.5 rounded-xl text-xs font-bold border bg-[#3A2A1C] text-[#F0E3D2] border-[#3A2A1C] transition";
+            document.getElementById('detailModalContent').dataset.selectedSize = size;
+        }
+
+        function closeDetailModal() {
+            document.getElementById('productDetailModal').classList.add('hidden');
+        }
+
+        function addToCartFromModal(id) {
+            const p = products.find(prod => prod.id === id);
+            if (!p) return;
+
+            const selectedSize = document.getElementById('detailModalContent').dataset.selectedSize || (p.sizes[0] || 'U');
+
+            const existingIndex = cart.findIndex(item => item.id === id && item.size === selectedSize);
+            if (existingIndex > -1) {
+                cart[existingIndex].quantity += 1;
+            } else {
+                cart.push({
+                    id: p.id,
+                    name: p.name,
+                    price: p.price,
+                    image: p.image,
+                    size: selectedSize,
+                    quantity: 1
+                });
+            }
+
+            saveCartToStorage();
+            updateCartUI();
+            closeDetailModal();
+            showToast("Agregado al carrito");
+        }
+
+        // Shopping Cart Logic
+        function toggleCartDrawer() {
+            const drawer = document.getElementById('cartDrawer');
+            drawer.classList.toggle('hidden');
+        }
+
+        function updateCartUI() {
+            const cartList = document.getElementById('cartItemsList');
+            const cartCountBadge = document.getElementById('cartCountBadge');
+            const subtotalEl = document.getElementById('cartSubtotal');
+
+            const totalItems = cart.reduce((acc, item) => acc + item.quantity, 0);
+            cartCountBadge.textContent = totalItems;
+            if (totalItems > 0) {
+                cartCountBadge.classList.remove('scale-0');
+            } else {
+                cartCountBadge.classList.add('scale-0');
+            }
+
+            if (cart.length === 0) {
+                cartList.innerHTML = `
+                    <div class="text-center py-12">
+                        <i data-lucide="shopping-bag" class="w-12 h-12 text-[#8A6848] mx-auto mb-3 opacity-50"></i>
+                        <p class="text-sm font-semibold text-[#3A2A1C]">Tu carrito está vacío</p>
+                        <p class="text-xs text-[#8A6848] mt-1">Explorá nuestro catálogo y sumá tus prendas favoritas.</p>
+                    </div>
+                `;
+                subtotalEl.textContent = '$0';
+                lucide.createIcons();
+                return;
+            }
+
+            let subtotal = 0;
+            cartList.innerHTML = cart.map((item, index) => {
+                const itemTotal = item.price * item.quantity;
+                subtotal += itemTotal;
+                return `
+                    <div class="flex items-center justify-between bg-[#F0E3D2] p-3 rounded-2xl border border-[#D6C0A3]">
+                        <img src="${item.image}" class="w-16 h-16 object-cover rounded-xl bg-[#D6C0A3]" onerror="this.src='https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&w=800&q=80'">
+                        <div class="flex-1 px-3">
+                            <h4 class="font-bold text-xs text-[#3A2A1C] line-clamp-1">${item.name}</h4>
+                            <p class="text-[10px] text-[#8A6848] font-semibold mt-0.5">Talle: ${item.size}</p>
+                            <p class="text-xs font-extrabold text-[#3A2A1C] mt-1">$${item.price.toLocaleString('es-AR')}</p>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <div class="flex items-center border border-[#B99A73] rounded-lg bg-[#D6C0A3]/30">
+                                <button onclick="changeCartQty(${index}, -1)" class="px-2 py-0.5 text-xs font-bold text-[#3A2A1C] hover:bg-[#D6C0A3] rounded-l-lg">-</button>
+                                <span class="px-2 text-xs font-bold text-[#3A2A1C]">${item.quantity}</span>
+                                <button onclick="changeCartQty(${index}, 1)" class="px-2 py-0.5 text-xs font-bold text-[#3A2A1C] hover:bg-[#D6C0A3] rounded-r-lg">+</button>
+                            </div>
+                            <button onclick="removeFromCart(${index})" class="text-red-800 hover:text-red-900 p-1">
+                                <i data-lucide="trash-2" class="w-4 h-4"></i>
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            subtotalEl.textContent = `$${subtotal.toLocaleString('es-AR')}`;
+            lucide.createIcons();
+        }
+
+        function changeCartQty(index, delta) {
+            if (cart[index]) {
+                cart[index].quantity += delta;
+                if (cart[index].quantity <= 0) {
+                    cart.splice(index, 1);
+                }
+                saveCartToStorage();
+                updateCartUI();
+            }
+        }
+
+        function removeFromCart(index) {
+            cart.splice(index, 1);
+            saveCartToStorage();
+            updateCartUI();
+            showToast("Producto quitado del carrito");
+        }
+
+        function checkoutWhatsApp() {
+            if (cart.length === 0) {
+                showToast("Tu carrito está vacío");
+                return;
+            }
+
+            let msg = `*¡Hola GAMAN! Quisiera realizar el siguiente pedido:*\n\n`;
+            let total = 0;
+
+            cart.forEach((item, i) => {
+                const sub = item.price * item.quantity;
+                total += sub;
+                msg += `• *${item.name}* (Talle: ${item.size})\n  Cantidad: ${item.quantity} x $${item.price.toLocaleString('es-AR')} = *$${sub.toLocaleString('es-AR')}*\n\n`;
+            });
+
+            msg += `*TOTAL DEL PEDIDO: $${total.toLocaleString('es-AR')}*\n\n`;
+            msg += `Quedo a la espera para coordinar el pago y envío. ¡Muchas gracias!`;
+
+            const phone = sellerPhone || '5491123456789';
+            const encoded = encodeURIComponent(msg);
+            const waUrl = `https://wa.me/${phone}?text=${encoded}`;
+
+            window.open(waUrl, '_blank');
+        }
+
+        // Local File Upload Handling
+        function handleFileSelect(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    uploadedBase64Image = event.target.result;
+                    document.getElementById('prodImage').value = ''; // Clear URL input
+                    showPreview(uploadedBase64Image);
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function showPreview(src) {
+            const container = document.getElementById('imagePreviewContainer');
+            const previewImg = document.getElementById('imagePreview');
+            if (src) {
+                previewImg.src = src;
+                container.classList.remove('hidden');
+            } else {
+                container.classList.add('hidden');
+            }
+        }
+
+        // SELLER ACTIONS: Add/Edit/Delete
+        function renderSellerTable() {
+            const tbody = document.getElementById('sellerTableBody');
+            tbody.innerHTML = '';
+
+            document.getElementById('statTotal').textContent = products.length;
+            document.getElementById('statCategories').textContent = categories.length;
+
+            products.forEach(p => {
+                const tr = document.createElement('tr');
+                tr.className = "hover:bg-[#D6C0A3]/20 transition";
+                tr.innerHTML = `
+                    <td class="p-4">
+                        <img src="${p.image}" class="w-12 h-12 object-cover rounded-xl bg-[#D6C0A3]" onerror="this.src='https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&w=800&q=80'">
+                    </td>
+                    <td class="p-4 font-bold text-xs text-[#3A2A1C]">${p.name}</td>
+                    <td class="p-4 text-xs text-[#8A6848]"><span class="bg-[#D6C0A3]/50 px-2.5 py-1 rounded-full border border-[#B99A73]/40">${p.category}</span></td>
+                    <td class="p-4 font-extrabold text-xs text-[#3A2A1C]">$${p.price.toLocaleString('es-AR')}</td>
+                    <td class="p-4 text-xs text-[#8A6848]">${p.sizes.join(', ')}</td>
+                    <td class="p-4 text-right space-x-2">
+                        <button onclick="editProduct(${p.id})" class="p-2 rounded-lg bg-[#D6C0A3] hover:bg-[#B99A73] text-[#3A2A1C] transition">
+                            <i data-lucide="edit" class="w-4 h-4"></i>
+                        </button>
+                        <button onclick="deleteProduct(${p.id})" class="p-2 rounded-lg bg-red-800/10 hover:bg-red-800 hover:text-white text-red-800 transition">
+                            <i data-lucide="trash-2" class="w-4 h-4"></i>
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+            lucide.createIcons();
+        }
+
+        function populateCategorySelect() {
+            const select = document.getElementById('prodCategory');
+            select.innerHTML = categories.map(c => `<option value="${c}">${c}</option>`).join('');
+        }
+
+        function openProductModal(isEdit = false) {
+            populateCategorySelect();
+            uploadedBase64Image = '';
+            showPreview('');
+            if (!isEdit) {
+                document.getElementById('productForm').reset();
+                document.getElementById('editProductId').value = '';
+                document.getElementById('sellerModalTitle').textContent = "Agregar Producto";
+            }
+            document.getElementById('sellerModal').classList.remove('hidden');
+        }
+
+        function closeSellerModal() {
+            document.getElementById('sellerModal').classList.add('hidden');
+        }
+
+        function editProduct(id) {
+            const p = products.find(prod => prod.id === id);
+            if (!p) return;
+
+            populateCategorySelect();
+            uploadedBase64Image = '';
+            document.getElementById('editProductId').value = p.id;
+            document.getElementById('prodName').value = p.name;
+            document.getElementById('prodCategory').value = p.category;
+            document.getElementById('prodPrice').value = p.price;
+            document.getElementById('prodImage').value = p.image.startsWith('data:') ? '' : p.image;
+            document.getElementById('prodSizes').value = p.sizes.join(', ');
+            document.getElementById('prodDesc').value = p.description;
+
+            if (p.image) {
+                showPreview(p.image);
+            }
+
+            document.getElementById('sellerModalTitle').textContent = "Editar Producto";
+            openProductModal(true);
+        }
+
+        function deleteProduct(id) {
+            products = products.filter(p => p.id !== id);
+            saveProductsToStorage();
+            renderSellerTable();
+            renderCatalog();
+            showToast("Producto eliminado del inventario");
+        }
+
+        function handleProductSubmit(e) {
+            e.preventDefault();
+            const editId = document.getElementById('editProductId').value;
+
+            const name = document.getElementById('prodName').value;
+            const category = document.getElementById('prodCategory').value;
+            const price = parseFloat(document.getElementById('prodPrice').value);
+            const urlImage = document.getElementById('prodImage').value;
+            
+            let finalImage = uploadedBase64Image || urlImage;
+            if (!finalImage) {
+                finalImage = 'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&w=800&q=80';
+            }
+
+            const sizesArr = document.getElementById('prodSizes').value.split(',').map(s => s.trim()).filter(s => s !== '');
+            const description = document.getElementById('prodDesc').value;
+
+            if (editId) {
+                const idx = products.findIndex(p => p.id === parseInt(editId));
+                if (idx > -1) {
+                    products[idx] = { id: parseInt(editId), name, category, price, image: finalImage, sizes: sizesArr, description };
+                    showToast("Producto actualizado correctamente");
+                }
+            } else {
+                const newProd = {
+                    id: Date.now(),
+                    name,
+                    category,
+                    price,
+                    image: finalImage,
+                    sizes: sizesArr.length ? sizesArr : ["S", "M", "L"],
+                    description
+                };
+                products.unshift(newProd);
+                showToast("Producto agregado al catálogo");
+            }
+
+            saveProductsToStorage();
+            closeSellerModal();
+            renderSellerTable();
+            renderCatalog();
+        }
+
+        // Toast Helpers
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toastMsg').textContent = msg;
+            toast.classList.remove('hidden');
+            setTimeout(() => {
+                toast.classList.add('hidden');
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
