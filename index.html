@@ -4,16 +4,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>GAMAN | Tienda de Ropa & Indumentaria</title>
-  <!-- Google Fonts: Playfair Display & Plus Jakarta Sans -->
+  <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   
   <style>
-    /* ==========================================================================
-       PALETA DE COLORES Y VARIABLES GLOBALES (GAMAN)
-       #F0E3D2 | #D6C0A3 | #B99A73 | #8A6848 | #3A2A1C
-       ========================================================================== */
     :root {
       --color-cream-light: #F0E3D2;
       --color-sand: #D6C0A3;
@@ -27,7 +23,6 @@
       --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
-    /* Reset & Estilos Base */
     * {
       box-sizing: border-box;
       margin: 0;
@@ -42,18 +37,7 @@
       overflow-x: hidden;
     }
 
-    a {
-      color: inherit;
-      text-decoration: none;
-    }
-
-    button, input, select, textarea {
-      font-family: inherit;
-    }
-
-    /* ==========================================================================
-       BANNER SUPERIOR (ANUNCIOS)
-       ========================================================================== */
+    /* Banner Superior */
     .top-announcement {
       background-color: var(--color-espresso);
       color: var(--color-sand);
@@ -65,9 +49,7 @@
       border-bottom: 1px solid rgba(185, 154, 115, 0.2);
     }
 
-    /* ==========================================================================
-       HEADER & NAVEGACIÓN
-       ========================================================================== */
+    /* Header */
     header {
       position: sticky;
       top: 0;
@@ -92,9 +74,6 @@
       font-weight: 700;
       letter-spacing: 0.1em;
       color: var(--color-cream-light);
-      display: flex;
-      align-items: center;
-      gap: 8px;
     }
 
     .brand-logo span {
@@ -134,14 +113,13 @@
       color: var(--color-cream-light);
       cursor: pointer;
       padding: 8px;
-      display: flex;
-      align-items: center;
+      font-size: 1.2rem;
     }
 
     .cart-count {
       position: absolute;
-      top: 0;
-      right: 0;
+      top: -2px;
+      right: -4px;
       background-color: var(--color-bronze);
       color: var(--color-espresso-dark);
       font-size: 0.75rem;
@@ -154,9 +132,7 @@
       align-items: center;
     }
 
-    /* ==========================================================================
-       HERO BANNER
-       ========================================================================== */
+    /* Hero Section */
     .hero-section {
       background-color: var(--color-espresso);
       padding: 60px 24px;
@@ -215,12 +191,9 @@
       height: 380px;
       object-fit: cover;
       display: block;
-      opacity: 0.9;
     }
 
-    /* ==========================================================================
-       SECCIÓN CLIENTE: CONTROLES & CATÁLOGO
-       ========================================================================== */
+    /* Catálogo Cliente */
     .catalog-section {
       max-width: 1200px;
       margin: 0 auto;
@@ -261,13 +234,7 @@
       border-color: var(--color-bronze);
     }
 
-    .search-box {
-      position: relative;
-      min-width: 260px;
-    }
-
     .search-box input {
-      width: 100%;
       background-color: var(--color-espresso);
       border: 1px solid var(--color-brown-warm);
       color: var(--color-cream-light);
@@ -275,13 +242,9 @@
       border-radius: 30px;
       font-size: 0.9rem;
       outline: none;
+      min-width: 240px;
     }
 
-    .search-box input:focus {
-      border-color: var(--color-bronze);
-    }
-
-    /* Grid de Productos */
     .products-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
@@ -305,11 +268,10 @@
     }
 
     .product-image {
-      position: relative;
       width: 100%;
       height: 320px;
-      background-color: #1a120c;
       overflow: hidden;
+      background-color: #1a120c;
     }
 
     .product-image img {
@@ -352,14 +314,8 @@
       margin-bottom: 16px;
     }
 
-    .product-actions {
-      margin-top: auto;
-      display: flex;
-      gap: 10px;
-    }
-
     .btn-add-cart {
-      flex: 1;
+      width: 100%;
       background-color: var(--color-bronze);
       color: var(--color-espresso-dark);
       border: none;
@@ -368,15 +324,14 @@
       font-weight: 600;
       cursor: pointer;
       transition: var(--transition);
+      margin-top: auto;
     }
 
     .btn-add-cart:hover {
       background-color: var(--color-sand);
     }
 
-    /* ==========================================================================
-       MODO VENDEDOR (PANEL DE CONTROL)
-       ========================================================================== */
+    /* Panel de Vendedor */
     .seller-panel {
       display: none;
       max-width: 1200px;
@@ -407,12 +362,6 @@
       color: var(--color-cream-light);
     }
 
-    .panel-actions {
-      display: flex;
-      gap: 12px;
-      flex-wrap: wrap;
-    }
-
     .btn-primary {
       background-color: var(--color-bronze);
       color: var(--color-espresso-dark);
@@ -421,11 +370,6 @@
       border-radius: 6px;
       font-weight: 600;
       cursor: pointer;
-      transition: var(--transition);
-    }
-
-    .btn-primary:hover {
-      background-color: var(--color-sand);
     }
 
     .btn-secondary {
@@ -436,63 +380,25 @@
       border-radius: 6px;
       font-weight: 600;
       cursor: pointer;
-      transition: var(--transition);
-    }
-
-    .btn-secondary:hover {
-      background-color: rgba(185, 154, 115, 0.1);
-    }
-
-    .stats-cards {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 20px;
-      margin-bottom: 40px;
-    }
-
-    .stat-card {
-      background-color: var(--color-espresso);
-      border: 1px solid rgba(185, 154, 115, 0.2);
-      padding: 20px;
-      border-radius: 8px;
-    }
-
-    .stat-card .val {
-      font-size: 2rem;
-      font-weight: 700;
-      color: var(--color-bronze);
-    }
-
-    .stat-card .lbl {
-      font-size: 0.85rem;
-      color: var(--color-sand);
-    }
-
-    /* Tabla de Productos */
-    .table-responsive {
-      overflow-x: auto;
-      background-color: var(--color-espresso);
-      border-radius: 8px;
-      border: 1px solid rgba(185, 154, 115, 0.2);
     }
 
     .seller-table {
       width: 100%;
       border-collapse: collapse;
-      text-align: left;
+      background-color: var(--color-espresso);
+      border-radius: 8px;
+      overflow: hidden;
     }
 
     .seller-table th, .seller-table td {
       padding: 16px;
       border-bottom: 1px solid rgba(185, 154, 115, 0.1);
+      text-align: left;
     }
 
     .seller-table th {
-      background-color: rgba(0,0,0,0.2);
+      background-color: rgba(0,0,0,0.3);
       color: var(--color-bronze);
-      font-weight: 600;
-      font-size: 0.85rem;
-      text-transform: uppercase;
     }
 
     .thumb-img {
@@ -502,16 +408,14 @@
       border-radius: 4px;
     }
 
-    /* ==========================================================================
-       MODALES Y DRAWERS
-       ========================================================================== */
+    /* Modales */
     .modal-overlay {
       position: fixed;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
-      background-color: rgba(0, 0, 0, 0.8);
+      background-color: rgba(0, 0, 0, 0.85);
       display: none;
       justify-content: center;
       align-items: center;
@@ -524,11 +428,10 @@
       border: 1px solid var(--color-bronze);
       border-radius: 12px;
       width: 100%;
-      max-width: 550px;
+      max-width: 500px;
       max-height: 90vh;
       overflow-y: auto;
       padding: 30px;
-      position: relative;
     }
 
     .modal-header {
@@ -536,12 +439,6 @@
       justify-content: space-between;
       align-items: center;
       margin-bottom: 24px;
-    }
-
-    .modal-title {
-      font-family: var(--font-heading);
-      font-size: 1.6rem;
-      color: var(--color-cream-light);
     }
 
     .close-modal {
@@ -573,30 +470,13 @@
       outline: none;
     }
 
-    .form-group input:focus {
-      border-color: var(--color-bronze);
-    }
-
-    .file-upload-area {
-      border: 2px dashed var(--color-bronze);
-      padding: 20px;
-      text-align: center;
-      border-radius: 8px;
-      cursor: pointer;
-      background-color: rgba(0,0,0,0.2);
-    }
-
-    .file-upload-area input {
-      display: none;
-    }
-
     /* Carrito Drawer */
     .cart-drawer {
       position: fixed;
       top: 0;
       right: -420px;
       width: 100%;
-      max-width: 400px;
+      max-width: 380px;
       height: 100%;
       background-color: var(--color-espresso);
       border-left: 1px solid var(--color-bronze);
@@ -632,18 +512,7 @@
       border-radius: 4px;
     }
 
-    .cart-item-info {
-      flex: 1;
-    }
-
-    .cart-footer {
-      border-top: 1px solid rgba(185, 154, 115, 0.2);
-      padding-top: 20px;
-    }
-
-    /* ==========================================================================
-       FOOTER
-       ========================================================================== */
+    /* Footer */
     footer {
       background-color: var(--color-espresso);
       border-top: 1px solid rgba(185, 154, 115, 0.2);
@@ -660,13 +529,6 @@
       margin-bottom: 40px;
     }
 
-    .footer-brand h3 {
-      font-family: var(--font-heading);
-      font-size: 1.8rem;
-      color: var(--color-cream-light);
-      margin-bottom: 16px;
-    }
-
     .footer-bottom {
       max-width: 1200px;
       margin: 0 auto;
@@ -679,7 +541,7 @@
 </head>
 <body>
 
-  <!-- Banner de Anuncios -->
+  <!-- Banner -->
   <div class="top-announcement" id="topAnnouncement">
     Envíos a todo el país | Cuotas sin interés con tarjetas seleccionadas
   </div>
@@ -687,13 +549,10 @@
   <!-- Header -->
   <header>
     <div class="nav-container">
-      <div class="brand-logo">
-        GAMAN<span>.</span>
-      </div>
+      <div class="brand-logo">GAMAN<span>.</span></div>
       <div class="nav-actions">
         <button class="btn-mode-toggle" onclick="handleViewModeClick()">
-          <span id="modeToggleIcon">🔒</span>
-          <span id="modeToggleText">Modo Vendedor</span>
+          🔒 <span id="modeToggleText">Modo Vendedor</span>
         </button>
         <button class="cart-trigger" onclick="toggleCartDrawer()">
           🛒 <span class="cart-count" id="cartCount">0</span>
@@ -702,10 +561,10 @@
     </div>
   </header>
 
-  <!-- Hero Section (Editar desde vendedor) -->
+  <!-- Hero -->
   <section class="hero-section">
     <div class="hero-container">
-      <div class="hero-text">
+      <div>
         <div class="hero-subtitle" id="heroSubtitleUI">NUEVA COLECCIÓN 2026</div>
         <h1 class="hero-title" id="heroTitleUI">Elegancia &amp; Resiliencia</h1>
         <p class="hero-description" id="heroDescUI">
@@ -718,27 +577,22 @@
     </div>
   </section>
 
-  <!-- SECCIÓN CLIENTE (Catálogo) -->
+  <!-- Cliente (Catálogo) -->
   <main class="catalog-section">
     <div class="controls-bar">
-      <div class="categories-filter" id="categoriesFilter">
-        <!-- Generado dinámicamente -->
-      </div>
+      <div class="categories-filter" id="categoriesFilter"></div>
       <div class="search-box">
-        <input type="text" id="searchInput" placeholder="Buscar prenda..." oninput="filterProducts()">
+        <input type="text" id="searchInput" placeholder="Buscar prenda..." oninput="renderCatalog()">
       </div>
     </div>
-
-    <div class="products-grid" id="productsGrid">
-      <!-- Tarjetas de Productos -->
-    </div>
+    <div class="products-grid" id="productsGrid"></div>
   </main>
 
-  <!-- SECCIÓN VENDEDOR (Panel de Administración) -->
+  <!-- Vendedor (Panel de Administración) -->
   <section class="seller-panel">
     <div class="panel-header">
       <h2 class="panel-title">Panel de Administración</h2>
-      <div class="panel-actions">
+      <div style="display: flex; gap: 10px; flex-wrap: wrap;">
         <button class="btn-primary" onclick="openProductModal()">+ Agregar Producto</button>
         <button class="btn-secondary" onclick="openCategoriesModal()">📁 Categorías</button>
         <button class="btn-secondary" onclick="openHeroEditModal()">✏️ Editar Hero &amp; Banner</button>
@@ -746,61 +600,38 @@
       </div>
     </div>
 
-    <div class="stats-cards">
-      <div class="stat-card">
-        <div class="val" id="statTotal">0</div>
-        <div class="lbl">Productos Totales</div>
-      </div>
-      <div class="stat-card">
-        <div class="val" id="statCategories">0</div>
-        <div class="lbl">Categorías Activas</div>
-      </div>
-    </div>
-
-    <!-- Formulario de Configuración de WhatsApp -->
-    <div style="margin-bottom: 30px; background: rgba(0,0,0,0.2); padding: 20px; border-radius: 8px; border: 1px solid var(--color-brown-warm);">
-      <h4 style="margin-bottom: 10px; color: var(--color-bronze);">Configuración de Contacto WhatsApp</h4>
+    <!-- Número WhatsApp -->
+    <div style="margin-bottom: 24px; background: rgba(0,0,0,0.2); padding: 16px; border-radius: 8px;">
+      <label style="display: block; font-size: 0.85rem; color: var(--color-sand); margin-bottom: 8px;">Número de WhatsApp para ventas:</label>
       <div style="display: flex; gap: 10px;">
         <input type="text" id="sellerPhoneInput" placeholder="Ej: 5493811234567" style="flex: 1; padding: 10px; background: rgba(0,0,0,0.3); border: 1px solid var(--color-brown-warm); color: #fff; border-radius: 4px;">
-        <button class="btn-primary" onclick="saveSellerPhone()">Guardar Número</button>
+        <button class="btn-primary" onclick="saveSellerPhone()">Guardar</button>
       </div>
-      <small style="color: var(--color-sand); margin-top: 6px; display: block;">Ingresá tu número con código de país sin el + (Ejemplo para Argentina: 5493811234567).</small>
     </div>
 
-    <div class="table-responsive">
-      <table class="seller-table">
-        <thead>
-          <tr>
-            <th>Imagen</th>
-            <th>Nombre</th>
-            <th>Categoría</th>
-            <th>Precio</th>
-            <th>Talles</th>
-            <th>Acciones</th>
-          </tr>
-        </thead>
-        <tbody id="sellerTableBody">
-          <!-- Filas de productos cargadas dinámicamente -->
-        </tbody>
-      </table>
-    </div>
+    <table class="seller-table">
+      <thead>
+        <tr>
+          <th>Imagen</th>
+          <th>Nombre</th>
+          <th>Categoría</th>
+          <th>Precio</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody id="sellerTableBody"></tbody>
+    </table>
   </section>
 
-  <!-- FOOTER -->
+  <!-- Footer -->
   <footer>
     <div class="footer-container">
-      <div class="footer-brand">
-        <h3 id="footerBrandTitle">GAMAN</h3>
+      <div>
+        <h3 id="footerBrandTitle" style="font-family: var(--font-heading); font-size: 1.8rem; color: #fff; margin-bottom: 12px;">GAMAN</h3>
         <p id="footerBrandDesc">Indumentaria urbana contemporánea. Diseñada para resaltar la fuerza interior con simplicidad estética.</p>
       </div>
       <div>
-        <h4 style="color: var(--color-bronze); margin-bottom: 12px;">Navegación</h4>
-        <p>Remeras &amp; Tops</p>
-        <p>Pantalones</p>
-        <p>Camperas &amp; Sweaters</p>
-      </div>
-      <div>
-        <h4 style="color: var(--color-bronze); margin-bottom: 12px;">Atención al Cliente</h4>
+        <h4 style="color: var(--color-bronze); margin-bottom: 12px;">Contacto</h4>
         <p id="footerWspUI">WhatsApp: +54 9 11 2345-6789</p>
         <p id="footerEmailUI">Email: hola@gamanstore.com</p>
       </div>
@@ -810,35 +641,35 @@
     </div>
   </footer>
 
-  <!-- Modal Login Vendedor -->
+  <!-- Modal Login -->
   <div class="modal-overlay" id="loginModal">
-    <div class="modal-content" style="max-width: 400px;">
+    <div class="modal-content" style="max-width: 360px;">
       <div class="modal-header">
-        <h3 class="modal-title">Acceso Vendedor</h3>
+        <h3>Acceso Vendedor</h3>
         <button class="close-modal" onclick="closeModal('loginModal')">&times;</button>
       </div>
       <form onsubmit="submitLogin(event)">
         <div class="form-group">
-          <label>Contraseña de Administración</label>
-          <input type="password" id="loginPassword" placeholder="Ingrese contraseña" required>
+          <label>Contraseña</label>
+          <input type="password" id="loginPassword" required>
         </div>
-        <div id="loginError" style="color: #ff6b6b; font-size: 0.85rem; display: none; margin-bottom: 12px;">Contraseña incorrecta. (Por defecto: gaman2026)</div>
+        <p id="loginError" style="color: #ff6b6b; font-size: 0.85rem; display: none; margin-bottom: 12px;">Contraseña incorrecta (Usa: gaman2026)</p>
         <button type="submit" class="btn-primary" style="width: 100%;">Ingresar</button>
       </form>
     </div>
   </div>
 
-  <!-- Modal Producto (Crear / Editar) -->
+  <!-- Modal Producto -->
   <div class="modal-overlay" id="productModal">
     <div class="modal-content">
       <div class="modal-header">
-        <h3 class="modal-title" id="productModalTitle">Agregar Producto</h3>
+        <h3 id="productModalTitle">Agregar Producto</h3>
         <button class="close-modal" onclick="closeModal('productModal')">&times;</button>
       </div>
       <form onsubmit="saveProduct(event)">
         <input type="hidden" id="prodId">
         <div class="form-group">
-          <label>Nombre del Producto</label>
+          <label>Nombre</label>
           <input type="text" id="prodName" required>
         </div>
         <div class="form-group">
@@ -850,23 +681,16 @@
           <input type="number" id="prodPrice" required>
         </div>
         <div class="form-group">
-          <label>Talles Disponibles (separados por coma)</label>
-          <input type="text" id="prodSizes" placeholder="Ej: S, M, L, XL" required>
+          <label>Talles (ej: S, M, L)</label>
+          <input type="text" id="prodSizes" required>
         </div>
         <div class="form-group">
-          <label>Subir Imagen desde Computadora/Celular</label>
-          <div class="file-upload-area" onclick="document.getElementById('prodFileInput').click()">
-            <span id="fileNameLabel">📁 Haz clic para seleccionar archivo</span>
-            <input type="file" id="prodFileInput" accept="image/*" onchange="handleFileSelect(event)">
-          </div>
+          <label>Subir Imagen desde la computadora</label>
+          <input type="file" id="prodFileInput" accept="image/*" onchange="handleFileSelect(event)">
         </div>
         <div class="form-group">
-          <label>O colocar URL de imagen externa</label>
+          <label>O URL de imagen externa</label>
           <input type="text" id="prodImgUrl" placeholder="https://...">
-        </div>
-        <div class="form-group">
-          <label>Descripción</label>
-          <textarea id="prodDesc" rows="3"></textarea>
         </div>
         <button type="submit" class="btn-primary" style="width: 100%;">Guardar Producto</button>
       </form>
@@ -877,39 +701,39 @@
   <div class="modal-overlay" id="categoriesModal">
     <div class="modal-content">
       <div class="modal-header">
-        <h3 class="modal-title">Gestionar Categorías</h3>
+        <h3>Categorías</h3>
         <button class="close-modal" onclick="closeModal('categoriesModal')">&times;</button>
       </div>
       <div class="form-group" style="display: flex; gap: 8px;">
         <input type="text" id="newCategoryInput" placeholder="Nueva categoría...">
         <button class="btn-primary" onclick="addCategory()">Agregar</button>
       </div>
-      <ul id="categoriesList" style="list-style: none; padding: 0;"></ul>
+      <ul id="categoriesList" style="list-style: none;"></ul>
     </div>
   </div>
 
-  <!-- Modal Editar Hero & Banner -->
+  <!-- Modal Editar Hero -->
   <div class="modal-overlay" id="heroEditModal">
     <div class="modal-content">
       <div class="modal-header">
-        <h3 class="modal-title">Editar Hero &amp; Banner</h3>
+        <h3>Editar Hero &amp; Banner</h3>
         <button class="close-modal" onclick="closeModal('heroEditModal')">&times;</button>
       </div>
       <form onsubmit="saveHeroContent(event)">
         <div class="form-group">
-          <label>Texto Banner Superior</label>
+          <label>Banner Anuncios</label>
           <input type="text" id="editTopAnnouncement">
         </div>
         <div class="form-group">
-          <label>Subtítulo Hero</label>
+          <label>Subtítulo</label>
           <input type="text" id="editHeroSubtitle">
         </div>
         <div class="form-group">
-          <label>Título Hero</label>
+          <label>Título Principal</label>
           <input type="text" id="editHeroTitle">
         </div>
         <div class="form-group">
-          <label>Descripción Hero</label>
+          <label>Descripción</label>
           <textarea id="editHeroDesc" rows="3"></textarea>
         </div>
         <div class="form-group">
@@ -920,7 +744,7 @@
           <label>O URL de Imagen Hero</label>
           <input type="text" id="editHeroImgUrl">
         </div>
-        <button type="submit" class="btn-primary" style="width: 100%;">Guardar Cambios</button>
+        <button type="submit" class="btn-primary" style="width: 100%;">Guardar</button>
       </form>
     </div>
   </div>
@@ -929,31 +753,31 @@
   <div class="modal-overlay" id="footerEditModal">
     <div class="modal-content">
       <div class="modal-header">
-        <h3 class="modal-title">Editar Footer</h3>
+        <h3>Editar Footer</h3>
         <button class="close-modal" onclick="closeModal('footerEditModal')">&times;</button>
       </div>
       <form onsubmit="saveFooterContent(event)">
         <div class="form-group">
-          <label>Título de Marca</label>
+          <label>Título Marca</label>
           <input type="text" id="editFooterBrandTitle">
         </div>
         <div class="form-group">
-          <label>Descripción de Marca</label>
+          <label>Descripción Marca</label>
           <textarea id="editFooterBrandDesc" rows="3"></textarea>
         </div>
         <div class="form-group">
-          <label>Texto WhatsApp</label>
+          <label>WhatsApp Contacto</label>
           <input type="text" id="editFooterWsp">
         </div>
         <div class="form-group">
-          <label>Email de Contacto</label>
+          <label>Email Contacto</label>
           <input type="text" id="editFooterEmail">
         </div>
         <div class="form-group">
-          <label>Texto Copyright</label>
+          <label>Copyright</label>
           <input type="text" id="editFooterCopyright">
         </div>
-        <button type="submit" class="btn-primary" style="width: 100%;">Guardar Cambios Footer</button>
+        <button type="submit" class="btn-primary" style="width: 100%;">Guardar Footer</button>
       </form>
     </div>
   </div>
@@ -961,13 +785,11 @@
   <!-- Carrito Drawer -->
   <div class="cart-drawer" id="cartDrawer">
     <div class="modal-header">
-      <h3 class="modal-title">Tu Carrito</h3>
+      <h3>Carrito de Compras</h3>
       <button class="close-modal" onclick="toggleCartDrawer()">&times;</button>
     </div>
-    <div class="cart-items" id="cartItemsContainer">
-      <!-- Items agregados -->
-    </div>
-    <div class="cart-footer">
+    <div class="cart-items" id="cartItemsContainer"></div>
+    <div>
       <div style="display: flex; justify-content: space-between; margin-bottom: 16px; font-weight: 700;">
         <span>Total:</span>
         <span id="cartTotal">$0</span>
@@ -976,9 +798,8 @@
     </div>
   </div>
 
-  <!-- JAVASCRIPT LOGIC -->
+  <!-- JavaScript -->
   <script>
-    // ESTADO DE LA APLICACIÓN
     let isSeller = false;
     let sellerPassword = 'gaman2026';
     let sellerPhone = '5493811234567';
@@ -993,8 +814,7 @@
         category: 'Remeras',
         price: 18500,
         sizes: ['S', 'M', 'L', 'XL'],
-        image: 'https://images.unsplash.com/photo-1521572267360-ee0c2909d518?auto=format&fit=crop&w=600&q=80',
-        description: 'Confeccionada en algodón 100% peinado. Corte holgado de caída limpia.'
+        image: 'https://images.unsplash.com/photo-1521572267360-ee0c2909d518?auto=format&fit=crop&w=600&q=80'
       },
       {
         id: 2,
@@ -1002,8 +822,7 @@
         category: 'Camperas',
         price: 45000,
         sizes: ['M', 'L'],
-        image: 'https://images.unsplash.com/photo-1548883354-7622d03aca27?auto=format&fit=crop&w=600&q=80',
-        description: 'Textil estructurado resistente al viento. Múltiples bolsillos funcionales.'
+        image: 'https://images.unsplash.com/photo-1548883354-7622d03aca27?auto=format&fit=crop&w=600&q=80'
       }
     ];
 
@@ -1011,7 +830,6 @@
     let currentBase64Image = '';
     let currentHeroBase64Image = '';
 
-    // DATOS CONFIGURABLES DE LA PÁGINA
     let siteContent = {
       announcement: 'Envíos a todo el país | Cuotas sin interés con tarjetas seleccionadas',
       heroSubtitle: 'NUEVA COLECCIÓN 2026',
@@ -1025,7 +843,6 @@
       footerCopyright: '© 2026 GAMAN Store. Todos los derechos reservados.'
     };
 
-    // INICIALIZACIÓN
     window.addEventListener('DOMContentLoaded', () => {
       loadFromLocalStorage();
       applySiteContentUI();
@@ -1033,7 +850,6 @@
       renderCatalog();
     });
 
-    // GUARDAR Y CARGAR DE LOCALSTORAGE
     function saveToLocalStorage() {
       localStorage.setItem('gaman_products', JSON.stringify(products));
       localStorage.setItem('gaman_categories', JSON.stringify(categories));
@@ -1042,22 +858,18 @@
     }
 
     function loadFromLocalStorage() {
-      const savedProds = localStorage.getItem('gaman_products');
-      if (savedProds) products = JSON.parse(savedProds);
-
-      const savedCats = localStorage.getItem('gaman_categories');
-      if (savedCats) categories = JSON.parse(savedCats);
-
-      const savedPhone = localStorage.getItem('gaman_phone');
-      if (savedPhone) sellerPhone = savedPhone;
-
-      const savedSite = localStorage.getItem('gaman_site_content');
-      if (savedSite) siteContent = JSON.parse(savedSite);
+      const p = localStorage.getItem('gaman_products');
+      if (p) products = JSON.parse(p);
+      const c = localStorage.getItem('gaman_categories');
+      if (c) categories = JSON.parse(c);
+      const ph = localStorage.getItem('gaman_phone');
+      if (ph) sellerPhone = ph;
+      const s = localStorage.getItem('gaman_site_content');
+      if (s) siteContent = JSON.parse(s);
 
       document.getElementById('sellerPhoneInput').value = sellerPhone;
     }
 
-    // APLICAR CONTENIDOS A LA INTERFAZ
     function applySiteContentUI() {
       document.getElementById('topAnnouncement').innerText = siteContent.announcement;
       document.getElementById('heroSubtitleUI').innerText = siteContent.heroSubtitle;
@@ -1072,7 +884,6 @@
       document.getElementById('footerCopyrightUI').innerText = siteContent.footerCopyright;
     }
 
-    // NAVEGACIÓN Y LOGIN DE VENDEDOR
     function handleViewModeClick() {
       if (isSeller) {
         isSeller = false;
@@ -1086,26 +897,23 @@
 
     function submitLogin(e) {
       e.preventDefault();
-      const pass = document.getElementById('loginPassword').value;
-      if (pass === sellerPassword) {
+      if (document.getElementById('loginPassword').value === sellerPassword) {
         isSeller = true;
         document.body.classList.add('seller-mode-active');
         document.getElementById('modeToggleText').innerText = 'Salir de Vendedor';
         closeModal('loginModal');
         document.getElementById('loginPassword').value = '';
+        document.getElementById('loginError').style.display = 'none';
         renderSellerPanel();
       } else {
         document.getElementById('loginError').style.display = 'block';
       }
     }
 
-    // RENDERS CLIENTE
     function renderCategoriesFilter() {
       const container = document.getElementById('categoriesFilter');
       container.innerHTML = categories.map(cat => `
-        <button class="cat-btn ${cat === activeCategory ? 'active' : ''}" onclick="filterCategory('${cat}')">
-          ${cat}
-        </button>
+        <button class="cat-btn ${cat === activeCategory ? 'active' : ''}" onclick="filterCategory('${cat}')">${cat}</button>
       `).join('');
     }
 
@@ -1125,49 +933,31 @@
         return matchesCat && matchesSearch;
       });
 
-      if (filtered.length === 0) {
-        grid.innerHTML = `<p style="grid-column: 1/-1; text-align: center; color: var(--color-sand);">No se encontraron productos.</p>`;
-        return;
-      }
-
       grid.innerHTML = filtered.map(p => `
         <div class="product-card">
-          <div class="product-image">
-            <img src="${p.image}" alt="${p.name}">
-          </div>
+          <div class="product-image"><img src="${p.image}" alt="${p.name}"></div>
           <div class="product-info">
             <div class="product-category">${p.category}</div>
             <h3 class="product-title">${p.name}</h3>
             <div class="product-price">$${p.price.toLocaleString('es-AR')}</div>
             <div style="font-size: 0.8rem; color: var(--color-sand); margin-bottom: 12px;">Talles: ${p.sizes.join(', ')}</div>
-            <div class="product-actions">
-              <button class="btn-add-cart" onclick="addToCart(${p.id})">Agregar al Carrito</button>
-            </div>
+            <button class="btn-add-cart" onclick="addToCart(${p.id})">Agregar al Carrito</button>
           </div>
         </div>
       `).join('');
     }
 
-    function filterProducts() {
-      renderCatalog();
-    }
-
-    // PANEL DE VENDEDOR
     function renderSellerPanel() {
-      document.getElementById('statTotal').innerText = products.length;
-      document.getElementById('statCategories').innerText = categories.length - 1; // Excluyendo "Todos"
-
       const tbody = document.getElementById('sellerTableBody');
       tbody.innerHTML = products.map(p => `
         <tr>
-          <td><img src="${p.image}" class="thumb-img" alt="${p.name}"></td>
+          <td><img src="${p.image}" class="thumb-img"></td>
           <td><strong>${p.name}</strong></td>
           <td>${p.category}</td>
           <td>$${p.price.toLocaleString('es-AR')}</td>
-          <td>${p.sizes.join(', ')}</td>
           <td>
-            <button class="btn-secondary" style="padding: 4px 8px; font-size: 0.8rem;" onclick="editProduct(${p.id})">✏️</button>
-            <button class="btn-secondary" style="padding: 4px 8px; font-size: 0.8rem; border-color: #ff6b6b; color: #ff6b6b;" onclick="deleteProduct(${p.id})">🗑️</button>
+            <button class="btn-secondary" style="padding: 4px 8px;" onclick="editProduct(${p.id})">✏️</button>
+            <button class="btn-secondary" style="padding: 4px 8px; color: #ff6b6b; border-color: #ff6b6b;" onclick="deleteProduct(${p.id})">🗑️</button>
           </td>
         </tr>
       `).join('');
@@ -1178,19 +968,15 @@
       if (val) {
         sellerPhone = val;
         saveToLocalStorage();
-        alert('Número de WhatsApp guardado correctamente.');
+        alert('Número guardado.');
       }
     }
 
-    // SUBIDA DE IMÁGENES
     function handleFileSelect(e) {
       const file = e.target.files[0];
       if (file) {
-        document.getElementById('fileNameLabel').innerText = `📄 ${file.name}`;
         const reader = new FileReader();
-        reader.onload = function(evt) {
-          currentBase64Image = evt.target.result;
-        };
+        reader.onload = evt => currentBase64Image = evt.target.result;
         reader.readAsDataURL(file);
       }
     }
@@ -1199,14 +985,11 @@
       const file = e.target.files[0];
       if (file) {
         const reader = new FileReader();
-        reader.onload = function(evt) {
-          currentHeroBase64Image = evt.target.result;
-        };
+        reader.onload = evt => currentHeroBase64Image = evt.target.result;
         reader.readAsDataURL(file);
       }
     }
 
-    // MODAL PRODUCTO
     function openProductModal(isEdit = false) {
       const select = document.getElementById('prodCategory');
       select.innerHTML = categories.filter(c => c !== 'Todos').map(c => `<option value="${c}">${c}</option>`).join('');
@@ -1217,8 +1000,6 @@
         document.getElementById('prodPrice').value = '';
         document.getElementById('prodSizes').value = '';
         document.getElementById('prodImgUrl').value = '';
-        document.getElementById('prodDesc').value = '';
-        document.getElementById('fileNameLabel').innerText = '📁 Haz clic para seleccionar archivo';
         currentBase64Image = '';
         document.getElementById('productModalTitle').innerText = 'Agregar Producto';
       }
@@ -1233,20 +1014,15 @@
       const price = parseFloat(document.getElementById('prodPrice').value);
       const sizes = document.getElementById('prodSizes').value.split(',').map(s => s.trim());
       const imgUrl = document.getElementById('prodImgUrl').value;
-      const desc = document.getElementById('prodDesc').value;
 
       const image = currentBase64Image || imgUrl || 'https://via.placeholder.com/300';
 
       if (id) {
-        // Editar
-        const index = products.findIndex(p => p.id == id);
-        if (index !== -1) {
-          products[index] = { id: parseInt(id), name, category, price, sizes, image, description: desc };
-        }
+        const idx = products.findIndex(p => p.id == id);
+        if (idx !== -1) products[idx] = { id: parseInt(id), name, category, price, sizes, image };
       } else {
-        // Crear
         const newId = products.length ? Math.max(...products.map(p => p.id)) + 1 : 1;
-        products.push({ id: newId, name, category, price, sizes, image, description: desc });
+        products.push({ id: newId, name, category, price, sizes, image });
       }
 
       saveToLocalStorage();
@@ -1266,12 +1042,11 @@
         document.getElementById('prodPrice').value = p.price;
         document.getElementById('prodSizes').value = p.sizes.join(', ');
         document.getElementById('prodImgUrl').value = p.image.startsWith('data:') ? '' : p.image;
-        document.getElementById('prodDesc').value = p.description || '';
       }
     }
 
     function deleteProduct(id) {
-      if (confirm('¿Estás seguro de eliminar este producto?')) {
+      if (confirm('¿Eliminar producto?')) {
         products = products.filter(p => p.id !== id);
         saveToLocalStorage();
         renderSellerPanel();
@@ -1279,7 +1054,6 @@
       }
     }
 
-    // MODAL HERO & BANNER
     function openHeroEditModal() {
       document.getElementById('editTopAnnouncement').value = siteContent.announcement;
       document.getElementById('editHeroSubtitle').value = siteContent.heroSubtitle;
@@ -1298,18 +1072,14 @@
       siteContent.heroDesc = document.getElementById('editHeroDesc').value;
 
       const urlImg = document.getElementById('editHeroImgUrl').value;
-      if (currentHeroBase64Image) {
-        siteContent.heroImg = currentHeroBase64Image;
-      } else if (urlImg) {
-        siteContent.heroImg = urlImg;
-      }
+      if (currentHeroBase64Image) siteContent.heroImg = currentHeroBase64Image;
+      else if (urlImg) siteContent.heroImg = urlImg;
 
       saveToLocalStorage();
       applySiteContentUI();
       closeModal('heroEditModal');
     }
 
-    // MODAL FOOTER
     function openFooterEditModal() {
       document.getElementById('editFooterBrandTitle').value = siteContent.footerTitle;
       document.getElementById('editFooterBrandDesc').value = siteContent.footerDesc;
@@ -1332,10 +1102,87 @@
       closeModal('footerEditModal');
     }
 
-    // MODAL CATEGORÍAS
     function openCategoriesModal() {
       renderCategoriesList();
       document.getElementById('categoriesModal').style.display = 'flex';
     }
 
-    function renderCategoriesList()
+    function renderCategoriesList() {
+      document.getElementById('categoriesList').innerHTML = categories.filter(c => c !== 'Todos').map(c => `
+        <li style="display: flex; justify-content: space-between; padding: 6px 0;">
+          <span>${c}</span>
+          <button class="btn-secondary" style="padding: 2px 6px; color: #ff6b6b;" onclick="removeCategory('${c}')">X</button>
+        </li>
+      `).join('');
+    }
+
+    function addCategory() {
+      const input = document.getElementById('newCategoryInput');
+      const val = input.value.trim();
+      if (val && !categories.includes(val)) {
+        categories.push(val);
+        input.value = '';
+        saveToLocalStorage();
+        renderCategoriesList();
+        renderCategoriesFilter();
+      }
+    }
+
+    function removeCategory(cat) {
+      categories = categories.filter(c => c !== cat);
+      saveToLocalStorage();
+      renderCategoriesList();
+      renderCategoriesFilter();
+    }
+
+    function toggleCartDrawer() {
+      document.getElementById('cartDrawer').classList.toggle('active');
+    }
+
+    function addToCart(id) {
+      const prod = products.find(p => p.id === id);
+      if (!prod) return;
+      const item = cart.find(i => i.id === id);
+      if (item) item.qty++;
+      else cart.push({ ...prod, qty: 1 });
+      updateCartUI();
+      toggleCartDrawer();
+    }
+
+    function updateCartUI() {
+      document.getElementById('cartCount').innerText = cart.reduce((s, i) => s + i.qty, 0);
+      let total = 0;
+      document.getElementById('cartItemsContainer').innerHTML = cart.map(i => {
+        total += i.price * i.qty;
+        return `
+          <div class="cart-item">
+            <img src="${i.image}">
+            <div style="flex: 1;">
+              <h5>${i.name}</h5>
+              <div style="font-size: 0.85rem; color: var(--color-sand);">$${i.price.toLocaleString('es-AR')} x ${i.qty}</div>
+            </div>
+          </div>
+        `;
+      }).join('');
+      document.getElementById('cartTotal').innerText = `$${total.toLocaleString('es-AR')}`;
+    }
+
+    function checkoutWhatsApp() {
+      if (!cart.length) return alert('Carrito vacío');
+      let msg = `Hola GAMAN! Quiero encargar:\n\n`;
+      let total = 0;
+      cart.forEach(i => {
+        const sub = i.price * i.qty;
+        total += sub;
+        msg += `▪ ${i.name} (x${i.qty}) - $${sub.toLocaleString('es-AR')}\n`;
+      });
+      msg += `\n*Total: $${total.toLocaleString('es-AR')}*`;
+      window.open(`https://wa.me/${sellerPhone}?text=${encodeURIComponent(msg)}`, '_blank');
+    }
+
+    function closeModal(id) {
+      document.getElementById(id).style.display = 'none';
+    }
+  </script>
+</body>
+</html>
