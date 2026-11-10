@@ -940,7 +940,9 @@
       applySiteContentUI();
       renderCategoriesFilter();
       await loadProductsFromCloud();
+      await loadStoreSettingsFromCloud();
       subscribeToProducts();
+      subscribeToStoreSettings();
       renderCatalog();
     });
 
@@ -955,6 +957,38 @@
     function subscribeToProducts() {
       productsChannel = supabaseClient.channel('gaman-products-live')
         .on('postgres_changes', { event: '*', schema: 'public', table: 'products' }, loadProductsFromCloud)
+        .subscribe();
+    }
+
+    async function loadStoreSettingsFromCloud() {
+      const { data, error } = await supabaseClient.from('site_settings').select('data').eq('id', 'store').maybeSingle();
+      if (error) { console.error('No se pudo cargar la configuración de la tienda:', error.message); return; }
+      if (data?.data) {
+        siteContent = { ...siteContent, ...(data.data.siteContent || {}) };
+        categories = [...new Set(['Todos', ...(data.data.categories || categories).filter(c => c !== 'Todos')])];
+        sellerPhone = data.data.sellerPhone || sellerPhone;
+      }
+      document.getElementById('sellerPhoneInput').value = sellerPhone;
+      applySiteContentUI();
+      renderCategoriesFilter();
+      renderCatalog();
+      if (isSeller) renderSellerPanel();
+    }
+
+    async function saveStoreSettingsToCloud() {
+      const data = { siteContent, categories, sellerPhone };
+      const { error } = await supabaseClient.from('site_settings').upsert({ id: 'store', data });
+      if (error) {
+        alert(`No se pudo guardar la configuración en la nube: ${error.message}`);
+        return false;
+      }
+      saveToLocalStorage();
+      return true;
+    }
+
+    function subscribeToStoreSettings() {
+      supabaseClient.channel('gaman-store-settings-live')
+        .on('postgres_changes', { event: '*', schema: 'public', table: 'site_settings' }, loadStoreSettingsFromCloud)
         .subscribe();
     }
 
@@ -1129,12 +1163,11 @@
       `).join('');
     }
 
-    function saveSellerPhone() {
+    async function saveSellerPhone() {
       const val = document.getElementById('sellerPhoneInput').value.trim();
       if (val) {
         sellerPhone = val;
-        saveToLocalStorage();
-        alert('Número guardado.');
+        if (await saveStoreSettingsToCloud()) alert('Número guardado y sincronizado.');
       }
     }
 
@@ -1227,7 +1260,7 @@
       document.getElementById('heroEditModal').style.display = 'flex';
     }
 
-    function saveHeroContent(e) {
+    async function saveHeroContent(e) {
       e.preventDefault();
       siteContent.announcement = document.getElementById('editTopAnnouncement').value;
       siteContent.heroSubtitle = document.getElementById('editHeroSubtitle').value;
@@ -1238,7 +1271,7 @@
       if (currentHeroBase64Image) siteContent.heroImg = currentHeroBase64Image;
       else if (urlImg) siteContent.heroImg = urlImg;
 
-      saveToLocalStorage();
+      if (!(await saveStoreSettingsToCloud())) return;
       applySiteContentUI();
       closeModal('heroEditModal');
     }
@@ -1252,7 +1285,7 @@
       document.getElementById('footerEditModal').style.display = 'flex';
     }
 
-    function saveFooterContent(e) {
+    async function saveFooterContent(e) {
       e.preventDefault();
       siteContent.footerTitle = document.getElementById('editFooterBrandTitle').value;
       siteContent.footerDesc = document.getElementById('editFooterBrandDesc').value;
@@ -1260,7 +1293,7 @@
       siteContent.footerEmail = document.getElementById('editFooterEmail').value;
       siteContent.footerCopyright = document.getElementById('editFooterCopyright').value;
 
-      saveToLocalStorage();
+      if (!(await saveStoreSettingsToCloud())) return;
       applySiteContentUI();
       closeModal('footerEditModal');
     }
@@ -1279,21 +1312,21 @@
       `).join('');
     }
 
-    function addCategory() {
+    async function addCategory() {
       const input = document.getElementById('newCategoryInput');
       const val = input.value.trim();
       if (val && !categories.includes(val)) {
         categories.push(val);
         input.value = '';
-        saveToLocalStorage();
+        if (!(await saveStoreSettingsToCloud())) return;
         renderCategoriesList();
         renderCategoriesFilter();
       }
     }
 
-    function removeCategory(cat) {
+    async function removeCategory(cat) {
       categories = categories.filter(c => c !== cat);
-      saveToLocalStorage();
+      if (!(await saveStoreSettingsToCloud())) return;
       renderCategoriesList();
       renderCategoriesFilter();
     }
@@ -1364,3 +1397,6 @@
   </script>
 </body>
 </html>
+
+
+
