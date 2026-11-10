@@ -628,7 +628,6 @@
         <button class="btn-secondary" onclick="openCategoriesModal()">📁 Categorías</button>
         <button class="btn-secondary" onclick="openHeroEditModal()">✏️ Editar Hero &amp; Banner</button>
         <button class="btn-secondary" onclick="openFooterEditModal()">📌 Editar Footer</button>
-        <button class="btn-secondary" onclick="openCredentialsModal()">🔑 Cambiar Credenciales</button>
       </div>
     </div>
 
@@ -706,8 +705,8 @@
       </div>
       <form onsubmit="submitLogin(event)">
         <div class="form-group">
-          <label>Usuario</label>
-          <input type="text" id="loginUser" required placeholder="Ingresar usuario">
+          <label>Email del vendedor</label>
+          <input type="email" id="loginUser" required placeholder="Email usado para crear el usuario">
         </div>
         <div class="form-group">
           <label>Contraseña</label>
@@ -884,10 +883,15 @@
   </div>
 
   <!-- JavaScript -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>
+    const SUPABASE_URL = 'https://nwxjhedljwrcyznvowwq.supabase.co';
+    const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_VetMvkDZshswm8haSET1pQ_pElavgDD';
+    const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
+    let productsChannel;
     let isSeller = false;
-    let sellerUser = 'admin';
-    let sellerPassword = 'gaman2026';
+    let sellerUser = '';
+    let sellerPassword = '';
     let sellerPhone = '5493811234567';
     let activeCategory = 'Todos';
 
@@ -931,12 +935,28 @@
       footerCopyright: '© 2026 GAMAN Store. Todos los derechos reservados.'
     };
 
-    window.addEventListener('DOMContentLoaded', () => {
+    window.addEventListener('DOMContentLoaded', async () => {
       loadFromLocalStorage();
       applySiteContentUI();
       renderCategoriesFilter();
+      await loadProductsFromCloud();
+      subscribeToProducts();
       renderCatalog();
     });
+
+    async function loadProductsFromCloud() {
+      const { data, error } = await supabaseClient.from('products').select('*').order('id');
+      if (error) { console.error(error); return; }
+      products = (data || []).map(row => ({ id: row.id, name: row.name, category: row.category, price: Number(row.price), sizes: row.sizes || [], description: row.description || '', image: row.image || '' }));
+      renderCatalog();
+      if (isSeller) renderSellerPanel();
+    }
+
+    function subscribeToProducts() {
+      productsChannel = supabaseClient.channel('gaman-products-live')
+        .on('postgres_changes', { event: '*', schema: 'public', table: 'products' }, loadProductsFromCloud)
+        .subscribe();
+    }
 
     function saveToLocalStorage() {
       localStorage.setItem('gaman_products', JSON.stringify(products));
@@ -990,22 +1010,25 @@
       }
     }
 
-    function submitLogin(e) {
+    async function submitLogin(e) {
       e.preventDefault();
       const userVal = document.getElementById('loginUser').value.trim();
       const passVal = document.getElementById('loginPassword').value.trim();
-
-      if (userVal === sellerUser && passVal === sellerPassword) {
+      const errorMessage = document.getElementById('loginError');
+      errorMessage.style.display = 'none';
+      try {
+        const { error } = await supabaseClient.auth.signInWithPassword({ email: userVal, password: passVal });
+        if (error) throw error;
         isSeller = true;
         document.body.classList.add('seller-mode-active');
         document.getElementById('modeToggleText').innerText = 'Salir de Vendedor';
         closeModal('loginModal');
         document.getElementById('loginUser').value = '';
         document.getElementById('loginPassword').value = '';
-        document.getElementById('loginError').style.display = 'none';
         renderSellerPanel();
-      } else {
-        document.getElementById('loginError').style.display = 'block';
+      } catch (error) {
+        errorMessage.innerText = `No se pudo iniciar sesión: ${error.message || 'revisá tu conexión y los datos ingresados.'}`;
+        errorMessage.style.display = 'block';
       }
     }
 
@@ -1150,7 +1173,7 @@
       document.getElementById('productModal').style.display = 'flex';
     }
 
-    function saveProduct(e) {
+    async function saveProduct(e) {
       e.preventDefault();
       const id = document.getElementById('prodId').value;
       const name = document.getElementById('prodName').value;
@@ -1162,15 +1185,10 @@
 
       const image = currentBase64Image || imgUrl || 'https://via.placeholder.com/300';
 
-      if (id) {
-        const idx = products.findIndex(p => p.id == id);
-        if (idx !== -1) products[idx] = { id: parseInt(id), name, category, price, sizes, description: desc, image };
-      } else {
-        const newId = products.length ? Math.max(...products.map(p => p.id)) + 1 : 1;
-        products.push({ id: newId, name, category, price, sizes, description: desc, image });
-      }
-
-      saveToLocalStorage();
+      const product = { name, category, price, sizes, description: desc, image };
+      const result = id ? await supabaseClient.from('products').update(product).eq('id', Number(id)) : await supabaseClient.from('products').insert(product);
+      if (result.error) { alert(`No se pudo guardar: ${result.error.message}`); return; }
+      await loadProductsFromCloud();
       closeModal('productModal');
       renderSellerPanel();
       renderCatalog();
@@ -1191,12 +1209,11 @@
       }
     }
 
-    function deleteProduct(id) {
+    async function deleteProduct(id) {
       if (confirm('¿Eliminar producto?')) {
-        products = products.filter(p => p.id !== id);
-        saveToLocalStorage();
-        renderSellerPanel();
-        renderCatalog();
+        const { error } = await supabaseClient.from('products').delete().eq('id', Number(id));
+        if (error) { alert(`No se pudo eliminar: ${error.message}`); return; }
+        await loadProductsFromCloud();
       }
     }
 
@@ -1295,6 +1312,19 @@
       toggleCartDrawer();
     }
 
+    function removeFromCart(id) {
+      const item = cart.find(i => i.id === id);
+      if (!item) return;
+      item.qty -= 1;
+      if (item.qty <= 0) cart = cart.filter(i => i.id !== id);
+      updateCartUI();
+    }
+
+    function removeAllFromCart(id) {
+      cart = cart.filter(i => i.id !== id);
+      updateCartUI();
+    }
+
     function updateCartUI() {
       document.getElementById('cartCount').innerText = cart.reduce((s, i) => s + i.qty, 0);
       let total = 0;
@@ -1302,10 +1332,12 @@
         total += i.price * i.qty;
         return `
           <div class="cart-item">
-            <img src="${i.image}">
+            <img src="${i.image}" alt="${i.name}">
             <div style="flex: 1;">
               <h5 style="color: var(--color-espresso);">${i.name}</h5>
-              <div style="font-size: 0.85rem; color: var(--color-brown-warm); font-weight: 600;">$${i.price.toLocaleString('es-AR')} x ${i.qty}</div>
+              <div style="font-size: 0.85rem; color: var(--color-brown-warm); font-weight: 600;">${i.price.toLocaleString('es-AR')} x ${i.qty}</div>
+              <button type="button" class="btn-secondary" style="padding: 4px 8px; margin-top: 8px;" onclick="removeFromCart(${i.id})">Quitar una unidad</button>
+              <button type="button" class="btn-secondary" style="padding: 4px 8px; margin: 8px 0 0 6px; color: #d9534f; border-color: #d9534f;" onclick="removeAllFromCart(${i.id})">Eliminar</button>
             </div>
           </div>
         `;
