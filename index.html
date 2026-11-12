@@ -433,6 +433,12 @@
       border-radius: 4px;
     }
 
+    .photo-draft-list { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 12px; }
+    .photo-draft-item { width: 112px; padding: 6px; border: 1px solid var(--color-sand); border-radius: 8px; background: #fff; }
+    .photo-draft-item img { width: 98px; height: 98px; object-fit: cover; border-radius: 5px; display: block; }
+    .photo-draft-item label { display: flex; align-items: center; gap: 4px; font-size: 0.75rem; margin-top: 6px; }
+    .photo-draft-item button { width: 100%; margin-top: 4px; padding: 3px; }
+
     /* Modales */
     .modal-overlay {
       position: fixed;
@@ -682,6 +688,7 @@
       <div style="margin-bottom: 16px; border-radius: 8px; overflow: hidden; height: 280px; background: #f0e3d2;">
         <img id="detailImg" src="" style="width: 100%; height: 100%; object-fit: cover;">
       </div>
+      <div id="detailGallery" style="display: flex; gap: 8px; margin: -8px 0 16px; flex-wrap: wrap;"></div>
       <div id="detailCategory" style="font-size: 0.8rem; text-transform: uppercase; color: var(--color-brown-warm); font-weight: 700; margin-bottom: 4px;"></div>
       <div id="detailPrice" style="font-size: 1.4rem; font-weight: 700; color: var(--color-espresso); margin-bottom: 12px;"></div>
       <div style="margin-bottom: 16px;">
@@ -769,11 +776,21 @@
           <textarea id="prodDesc" rows="3" placeholder="Detalles de tela, confección, etc." required></textarea>
         </div>
         <div class="form-group">
-          <label>Subir Imagen desde la computadora</label>
-          <input type="file" id="prodFileInput" accept="image/*" onchange="handleFileSelect(event)">
+          <label>Fotos del producto (máximo 3)</label>
+          <input type="file" id="prodFileInput" accept="image/*" multiple onchange="handleProductFilesSelect(event)">
+          <div id="productPhotosPreview" class="photo-draft-list"></div>
         </div>
         <div class="form-group">
-          <label>O URL de imagen externa</label>
+          <label>Ajustar encuadre de portada</label>
+          <div style="width:100%;max-width:300px;height:260px;overflow:hidden;border-radius:8px;background:#fff;border:1px solid var(--color-sand);margin:8px auto;">
+            <img id="coverEditorPreview" alt="Vista previa de portada" style="width:100%;height:100%;object-fit:cover;object-position:50% 50%;transform:scale(1);">
+          </div>
+          <label for="coverX">Mover horizontalmente</label><input id="coverX" type="range" min="0" max="100" value="50" oninput="setCoverCrop('x',this.value)">
+          <label for="coverY">Mover verticalmente</label><input id="coverY" type="range" min="0" max="100" value="50" oninput="setCoverCrop('y',this.value)">
+          <label for="coverZoom">Zoom</label><input id="coverZoom" type="range" min="1" max="2.5" step="0.05" value="1" oninput="setCoverCrop('zoom',this.value)">
+        </div>
+        <div class="form-group">
+          <label>O agregar una foto con URL</label>
           <input type="text" id="prodImgUrl" placeholder="https://...">
         </div>
         <button type="submit" class="btn-primary" style="width: 100%;">Guardar Producto</button>
@@ -921,6 +938,9 @@
     let cart = [];
     let currentBase64Image = '';
     let currentHeroBase64Image = '';
+    let draftProductPhotos = [];
+    let draftCoverIndex = 0;
+    let draftCoverCrop = { x: 50, y: 50, zoom: 1 };
 
     let siteContent = {
       announcement: 'Envíos a todo el país | Cuotas sin interés con tarjetas seleccionadas',
@@ -949,7 +969,11 @@
     async function loadProductsFromCloud() {
       const { data, error } = await supabaseClient.from('products').select('*').order('id');
       if (error) { console.error(error); return; }
-      products = (data || []).map(row => ({ id: row.id, name: row.name, category: row.category, price: Number(row.price), sizes: row.sizes || [], description: row.description || '', image: row.image || '' }));
+      products = (data || []).map(row => {
+        const images = Array.isArray(row.images) && row.images.length ? row.images : (row.image ? [row.image] : []);
+        const coverIndex = Math.min(Number(row.cover_index) || 0, Math.max(images.length - 1, 0));
+        return { id: row.id, name: row.name, category: row.category, price: Number(row.price), sizes: row.sizes || [], description: row.description || '', images, coverIndex, image: images[coverIndex] || row.image || '', coverX: Number(row.cover_x ?? 50), coverY: Number(row.cover_y ?? 50), coverZoom: Number(row.cover_zoom ?? 1) };
+      });
       renderCatalog();
       if (isSeller) renderSellerPanel();
     }
@@ -1110,7 +1134,7 @@
 
       grid.innerHTML = filtered.map(p => `
         <div class="product-card">
-          <div class="product-image" onclick="openDetailModal(${p.id})"><img src="${p.image}" alt="${p.name}"></div>
+          <div class="product-image" onclick="openDetailModal(${p.id})"><img src="${p.image}" alt="${p.name}" style="object-position:${p.coverX ?? 50}% ${p.coverY ?? 50}%;transform:scale(${p.coverZoom ?? 1});transform-origin:center;"></div>
           <div class="product-info">
             <div class="product-category">${p.category}</div>
             <h3 class="product-title" style="cursor:pointer;" onclick="openDetailModal(${p.id})">${p.name}</h3>
@@ -1130,6 +1154,8 @@
 
       document.getElementById('detailTitle').innerText = p.name;
       document.getElementById('detailImg').src = p.image;
+      document.getElementById('detailImg').style.objectPosition = `${p.coverX ?? 50}% ${p.coverY ?? 50}%`;
+      document.getElementById('detailImg').style.transform = `scale(${p.coverZoom ?? 1})`;
       document.getElementById('detailCategory').innerText = p.category;
       document.getElementById('detailPrice').innerText = `$${p.price.toLocaleString('es-AR')}`;
       document.getElementById('detailDesc').innerText = p.description || 'Sin descripción disponible.';
@@ -1138,6 +1164,23 @@
       sizesContainer.innerHTML = p.sizes.map(s => `
         <span style="border: 1px solid var(--color-sand); padding: 4px 10px; border-radius: 4px; font-size: 0.85rem; background: #fff; color: var(--color-espresso); font-weight: 600;">${s}</span>
       `).join('');
+
+      const gallery = document.getElementById('detailGallery');
+      gallery.replaceChildren();
+      (p.images || [p.image]).forEach(src => {
+        const thumb = document.createElement('img');
+        thumb.src = src;
+        thumb.alt = `Foto de ${p.name}`;
+        thumb.style.cssText = 'width:58px;height:58px;object-fit:cover;border-radius:5px;cursor:pointer;border:1px solid var(--color-sand);';
+        thumb.addEventListener('click', () => {
+          const detailImg = document.getElementById('detailImg');
+          detailImg.src = src;
+          const isCover = src === p.image;
+          detailImg.style.objectPosition = isCover ? `${p.coverX ?? 50}% ${p.coverY ?? 50}%` : '50% 50%';
+          detailImg.style.transform = isCover ? `scale(${p.coverZoom ?? 1})` : 'scale(1)';
+        });
+        gallery.appendChild(thumb);
+      });
 
       document.getElementById('detailAddBtn').onclick = function() {
         addToCart(p.id);
@@ -1151,7 +1194,7 @@
       const tbody = document.getElementById('sellerTableBody');
       tbody.innerHTML = products.map(p => `
         <tr>
-          <td><img src="${p.image}" class="thumb-img"></td>
+          <td><img src="${p.image}" class="thumb-img" style="object-position:${p.coverX ?? 50}% ${p.coverY ?? 50}%;transform:scale(${p.coverZoom ?? 1});"></td>
           <td><strong>${p.name}</strong></td>
           <td>${p.category}</td>
           <td>$${p.price.toLocaleString('es-AR')}</td>
@@ -1169,6 +1212,72 @@
         sellerPhone = val;
         if (await saveStoreSettingsToCloud()) alert('Número guardado y sincronizado.');
       }
+    }
+
+    function handleProductFilesSelect(e) {
+      const files = Array.from(e.target.files || []);
+      const remaining = 3 - draftProductPhotos.length;
+      if (files.length > remaining) alert(`Podés agregar hasta 3 fotos. Te quedan ${remaining} lugar(es).`);
+      files.slice(0, remaining).forEach(file => draftProductPhotos.push({ url: URL.createObjectURL(file), file }));
+      e.target.value = '';
+      renderProductPhotoDraft();
+    }
+
+    function renderProductPhotoDraft() {
+      const container = document.getElementById('productPhotosPreview');
+      container.replaceChildren();
+      draftProductPhotos.forEach((photo, index) => {
+        const item = document.createElement('div');
+        item.className = 'photo-draft-item';
+        const image = document.createElement('img');
+        image.src = photo.url;
+        image.alt = `Foto ${index + 1}`;
+        const label = document.createElement('label');
+        const radio = document.createElement('input');
+        radio.type = 'radio'; radio.name = 'coverPhoto'; radio.checked = index === draftCoverIndex;
+        radio.addEventListener('change', () => { draftCoverIndex = index; updateCoverEditor(); });
+        label.append(radio, document.createTextNode('Portada'));
+        const remove = document.createElement('button');
+        remove.type = 'button'; remove.className = 'btn-secondary'; remove.textContent = 'Quitar';
+        remove.addEventListener('click', () => {
+          if (photo.file) URL.revokeObjectURL(photo.url);
+          draftProductPhotos.splice(index, 1);
+          if (draftCoverIndex >= draftProductPhotos.length) draftCoverIndex = Math.max(0, draftProductPhotos.length - 1);
+          else if (index < draftCoverIndex) draftCoverIndex -= 1;
+          renderProductPhotoDraft();
+        });
+        item.append(image, label, remove);
+        container.appendChild(item);
+      });
+      updateCoverEditor();
+    }
+
+    function updateCoverEditor() {
+      const preview = document.getElementById('coverEditorPreview');
+      if (!preview) return;
+      const photo = draftProductPhotos[draftCoverIndex];
+      preview.src = photo?.url || '';
+      preview.style.objectPosition = `${draftCoverCrop.x}% ${draftCoverCrop.y}%`;
+      preview.style.transform = `scale(${draftCoverCrop.zoom})`;
+      ['coverX', 'coverY', 'coverZoom'].forEach(id => { document.getElementById(id).disabled = !photo; });
+    }
+
+    function setCoverCrop(axis, value) {
+      draftCoverCrop[axis] = Number(value);
+      updateCoverEditor();
+    }
+
+    async function uploadProductPhotos() {
+      const urls = [];
+      for (const photo of draftProductPhotos) {
+        if (!photo.file) { urls.push(photo.url); continue; }
+        const safeName = photo.file.name.replace(/[^a-zA-Z0-9._-]/g, '-');
+        const path = `${Date.now()}-${Math.random().toString(36).slice(2)}-${safeName}`;
+        const { error } = await supabaseClient.storage.from('gaman-product-images').upload(path, photo.file, { cacheControl: '3600', upsert: false });
+        if (error) throw error;
+        urls.push(supabaseClient.storage.from('gaman-product-images').getPublicUrl(path).data.publicUrl);
+      }
+      return urls;
     }
 
     function handleFileSelect(e) {
@@ -1200,7 +1309,13 @@
         document.getElementById('prodSizes').value = '';
         document.getElementById('prodDesc').value = '';
         document.getElementById('prodImgUrl').value = '';
-        currentBase64Image = '';
+        draftProductPhotos = [];
+        draftCoverIndex = 0;
+        draftCoverCrop = { x: 50, y: 50, zoom: 1 };
+        document.getElementById('coverX').value = 50;
+        document.getElementById('coverY').value = 50;
+        document.getElementById('coverZoom').value = 1;
+        renderProductPhotoDraft();
         document.getElementById('productModalTitle').innerText = 'Agregar Producto';
       }
       document.getElementById('productModal').style.display = 'flex';
@@ -1216,13 +1331,24 @@
       const desc = document.getElementById('prodDesc').value;
       const imgUrl = document.getElementById('prodImgUrl').value;
 
-      const image = currentBase64Image || imgUrl || 'https://via.placeholder.com/300';
-
-      const product = { name, category, price, sizes, description: desc, image };
+      if (imgUrl.trim() && !draftProductPhotos.some(photo => photo.url === imgUrl.trim())) {
+        if (draftProductPhotos.length >= 3) { alert('Ya hay 3 fotos. Quitá una antes de agregar otra.'); return; }
+        draftProductPhotos.push({ url: imgUrl.trim(), file: null });
+      }
+      let images;
+      try { images = await uploadProductPhotos(); }
+      catch (error) { alert(`No se pudo subir una foto: ${error.message}`); return; }
+      if (!images.length) images = ['https://via.placeholder.com/300'];
+      const coverIndex = Math.min(draftCoverIndex, images.length - 1);
+      const image = images[coverIndex];
+      const product = { name, category, price, sizes, description: desc, image, images, cover_index: coverIndex, cover_x: draftCoverCrop.x, cover_y: draftCoverCrop.y, cover_zoom: draftCoverCrop.zoom };
       const result = id ? await supabaseClient.from('products').update(product).eq('id', Number(id)) : await supabaseClient.from('products').insert(product);
       if (result.error) { alert(`No se pudo guardar: ${result.error.message}`); return; }
       await loadProductsFromCloud();
       closeModal('productModal');
+      draftProductPhotos = [];
+      draftCoverIndex = 0;
+      draftCoverCrop = { x: 50, y: 50, zoom: 1 };
       renderSellerPanel();
       renderCatalog();
     }
@@ -1238,7 +1364,14 @@
         document.getElementById('prodPrice').value = p.price;
         document.getElementById('prodSizes').value = p.sizes.join(', ');
         document.getElementById('prodDesc').value = p.description || '';
-        document.getElementById('prodImgUrl').value = p.image.startsWith('data:') ? '' : p.image;
+        document.getElementById('prodImgUrl').value = '';
+        draftProductPhotos = (p.images || [p.image]).filter(Boolean).slice(0, 3).map(url => ({ url, file: null }));
+        draftCoverIndex = Math.min(p.coverIndex || 0, Math.max(draftProductPhotos.length - 1, 0));
+        draftCoverCrop = { x: p.coverX ?? 50, y: p.coverY ?? 50, zoom: p.coverZoom ?? 1 };
+        document.getElementById('coverX').value = draftCoverCrop.x;
+        document.getElementById('coverY').value = draftCoverCrop.y;
+        document.getElementById('coverZoom').value = draftCoverCrop.zoom;
+        renderProductPhotoDraft();
       }
     }
 
@@ -1397,6 +1530,3 @@
   </script>
 </body>
 </html>
-
-
-
