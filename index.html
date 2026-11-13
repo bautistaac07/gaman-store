@@ -275,12 +275,16 @@
       overflow: hidden;
       background-color: #f7f3ed;
       cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
     .product-image img {
       width: 100%;
       height: 100%;
-      object-fit: cover;
+      object-fit: contain;
+      object-position: center;
       transition: var(--transition);
     }
 
@@ -467,6 +471,26 @@
       box-shadow: 0 20px 40px rgba(0,0,0,0.2);
     }
 
+    .detail-photo-frame {
+      margin-bottom: 16px;
+      border-radius: 8px;
+      overflow: hidden;
+      height: min(52vh, 380px);
+      min-height: 210px;
+      background: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .detail-photo-frame img { width: 100%; height: 100%; object-fit: contain; object-position: center; }
+
+    @media (max-width: 600px) {
+      .product-image { height: min(72vw, 340px); }
+      .detail-photo-frame { height: 42vh; min-height: 190px; }
+      .modal-content { padding: 22px; }
+    }
+
     .modal-header {
       display: flex;
       justify-content: space-between;
@@ -545,7 +569,7 @@
     .cart-item img {
       width: 60px;
       height: 60px;
-      object-fit: cover;
+      object-fit: contain;
       border-radius: 4px;
     }
 
@@ -685,8 +709,8 @@
         <h3 id="detailTitle" style="font-family: var(--font-heading); font-size: 1.6rem; color: var(--color-espresso);">Detalle del Producto</h3>
         <button class="close-modal" onclick="closeModal('detailModal')">&times;</button>
       </div>
-      <div style="margin-bottom: 16px; border-radius: 8px; overflow: hidden; height: 280px; background: #f0e3d2;">
-        <img id="detailImg" src="" style="width: 100%; height: 100%; object-fit: cover;">
+      <div class="detail-photo-frame">
+        <img id="detailImg" src="" alt="Foto del producto">
       </div>
       <div id="detailGallery" style="display: flex; gap: 8px; margin: -8px 0 16px; flex-wrap: wrap;"></div>
       <div id="detailCategory" style="font-size: 0.8rem; text-transform: uppercase; color: var(--color-brown-warm); font-weight: 700; margin-bottom: 4px;"></div>
@@ -781,9 +805,16 @@
           <div id="productPhotosPreview" class="photo-draft-list"></div>
         </div>
         <div class="form-group">
+          <label for="coverFit">Cómo mostrar la foto en la tienda</label>
+          <select id="coverFit" onchange="updateCoverEditor()">
+            <option value="contain">Mostrar la foto completa</option>
+            <option value="cover">Recortar para llenar el espacio</option>
+          </select>
+        </div>
+        <div class="form-group">
           <label>Ajustar encuadre de portada</label>
           <div style="width:100%;max-width:300px;height:260px;overflow:hidden;border-radius:8px;background:#fff;border:1px solid var(--color-sand);margin:8px auto;">
-            <img id="coverEditorPreview" alt="Vista previa de portada" style="width:100%;height:100%;object-fit:cover;object-position:50% 50%;transform:scale(1);">
+            <img id="coverEditorPreview" alt="Vista previa de portada" style="width:100%;height:100%;object-fit:contain;object-position:50% 50%;transform:scale(1);">
           </div>
           <label for="coverX">Mover horizontalmente</label><input id="coverX" type="range" min="0" max="100" value="50" oninput="setCoverCrop('x',this.value)">
           <label for="coverY">Mover verticalmente</label><input id="coverY" type="range" min="0" max="100" value="50" oninput="setCoverCrop('y',this.value)">
@@ -972,7 +1003,7 @@
       products = (data || []).map(row => {
         const images = Array.isArray(row.images) && row.images.length ? row.images : (row.image ? [row.image] : []);
         const coverIndex = Math.min(Number(row.cover_index) || 0, Math.max(images.length - 1, 0));
-        return { id: row.id, name: row.name, category: row.category, price: Number(row.price), sizes: row.sizes || [], description: row.description || '', images, coverIndex, image: images[coverIndex] || row.image || '', coverX: Number(row.cover_x ?? 50), coverY: Number(row.cover_y ?? 50), coverZoom: Number(row.cover_zoom ?? 1) };
+        return { id: row.id, name: row.name, category: row.category, price: Number(row.price), sizes: row.sizes || [], description: row.description || '', images, coverIndex, image: images[coverIndex] || row.image || '', coverX: Number(row.cover_x ?? 50), coverY: Number(row.cover_y ?? 50), coverZoom: Number(row.cover_zoom ?? 1), imageFit: row.image_fit || 'contain' };
       });
       renderCatalog();
       if (isSeller) renderSellerPanel();
@@ -1134,7 +1165,7 @@
 
       grid.innerHTML = filtered.map(p => `
         <div class="product-card">
-          <div class="product-image" onclick="openDetailModal(${p.id})"><img src="${p.image}" alt="${p.name}" style="object-position:${p.coverX ?? 50}% ${p.coverY ?? 50}%;transform:scale(${p.coverZoom ?? 1});transform-origin:center;"></div>
+          <div class="product-image" onclick="openDetailModal(${p.id})"><img src="${p.image}" alt="${p.name}" style="object-fit:${p.imageFit || 'contain'};object-position:${p.imageFit === 'cover' ? (p.coverX ?? 50) : 50}% ${p.imageFit === 'cover' ? (p.coverY ?? 50) : 50}%;transform:scale(${p.imageFit === 'cover' ? (p.coverZoom ?? 1) : 1});transform-origin:center;"></div>
           <div class="product-info">
             <div class="product-category">${p.category}</div>
             <h3 class="product-title" style="cursor:pointer;" onclick="openDetailModal(${p.id})">${p.name}</h3>
@@ -1154,8 +1185,9 @@
 
       document.getElementById('detailTitle').innerText = p.name;
       document.getElementById('detailImg').src = p.image;
-      document.getElementById('detailImg').style.objectPosition = `${p.coverX ?? 50}% ${p.coverY ?? 50}%`;
-      document.getElementById('detailImg').style.transform = `scale(${p.coverZoom ?? 1})`;
+      document.getElementById('detailImg').style.objectFit = p.imageFit || 'contain';
+      document.getElementById('detailImg').style.objectPosition = p.imageFit === 'cover' ? `${p.coverX ?? 50}% ${p.coverY ?? 50}%` : '50% 50%';
+      document.getElementById('detailImg').style.transform = `scale(${p.imageFit === 'cover' ? (p.coverZoom ?? 1) : 1})`;
       document.getElementById('detailCategory').innerText = p.category;
       document.getElementById('detailPrice').innerText = `$${p.price.toLocaleString('es-AR')}`;
       document.getElementById('detailDesc').innerText = p.description || 'Sin descripción disponible.';
@@ -1176,8 +1208,9 @@
           const detailImg = document.getElementById('detailImg');
           detailImg.src = src;
           const isCover = src === p.image;
-          detailImg.style.objectPosition = isCover ? `${p.coverX ?? 50}% ${p.coverY ?? 50}%` : '50% 50%';
-          detailImg.style.transform = isCover ? `scale(${p.coverZoom ?? 1})` : 'scale(1)';
+          detailImg.style.objectFit = p.imageFit || 'contain';
+          detailImg.style.objectPosition = isCover && p.imageFit === 'cover' ? `${p.coverX ?? 50}% ${p.coverY ?? 50}%` : '50% 50%';
+          detailImg.style.transform = isCover && p.imageFit === 'cover' ? `scale(${p.coverZoom ?? 1})` : 'scale(1)';
         });
         gallery.appendChild(thumb);
       });
@@ -1256,10 +1289,12 @@
       const preview = document.getElementById('coverEditorPreview');
       if (!preview) return;
       const photo = draftProductPhotos[draftCoverIndex];
+      const fit = document.getElementById('coverFit').value;
       preview.src = photo?.url || '';
-      preview.style.objectPosition = `${draftCoverCrop.x}% ${draftCoverCrop.y}%`;
-      preview.style.transform = `scale(${draftCoverCrop.zoom})`;
-      ['coverX', 'coverY', 'coverZoom'].forEach(id => { document.getElementById(id).disabled = !photo; });
+      preview.style.objectFit = fit;
+      preview.style.objectPosition = fit === 'cover' ? `${draftCoverCrop.x}% ${draftCoverCrop.y}%` : '50% 50%';
+      preview.style.transform = `scale(${fit === 'cover' ? draftCoverCrop.zoom : 1})`;
+      ['coverX', 'coverY', 'coverZoom'].forEach(id => { document.getElementById(id).disabled = !photo || fit !== 'cover'; });
     }
 
     function setCoverCrop(axis, value) {
@@ -1312,6 +1347,7 @@
         draftProductPhotos = [];
         draftCoverIndex = 0;
         draftCoverCrop = { x: 50, y: 50, zoom: 1 };
+        document.getElementById('coverFit').value = 'contain';
         document.getElementById('coverX').value = 50;
         document.getElementById('coverY').value = 50;
         document.getElementById('coverZoom').value = 1;
@@ -1341,7 +1377,7 @@
       if (!images.length) images = ['https://via.placeholder.com/300'];
       const coverIndex = Math.min(draftCoverIndex, images.length - 1);
       const image = images[coverIndex];
-      const product = { name, category, price, sizes, description: desc, image, images, cover_index: coverIndex, cover_x: draftCoverCrop.x, cover_y: draftCoverCrop.y, cover_zoom: draftCoverCrop.zoom };
+      const product = { name, category, price, sizes, description: desc, image, images, cover_index: coverIndex, cover_x: draftCoverCrop.x, cover_y: draftCoverCrop.y, cover_zoom: draftCoverCrop.zoom, image_fit: document.getElementById('coverFit').value };
       const result = id ? await supabaseClient.from('products').update(product).eq('id', Number(id)) : await supabaseClient.from('products').insert(product);
       if (result.error) { alert(`No se pudo guardar: ${result.error.message}`); return; }
       await loadProductsFromCloud();
@@ -1368,6 +1404,7 @@
         draftProductPhotos = (p.images || [p.image]).filter(Boolean).slice(0, 3).map(url => ({ url, file: null }));
         draftCoverIndex = Math.min(p.coverIndex || 0, Math.max(draftProductPhotos.length - 1, 0));
         draftCoverCrop = { x: p.coverX ?? 50, y: p.coverY ?? 50, zoom: p.coverZoom ?? 1 };
+        document.getElementById('coverFit').value = p.imageFit || 'contain';
         document.getElementById('coverX').value = draftCoverCrop.x;
         document.getElementById('coverY').value = draftCoverCrop.y;
         document.getElementById('coverZoom').value = draftCoverCrop.zoom;
@@ -1530,3 +1567,4 @@
   </script>
 </body>
 </html>
+
