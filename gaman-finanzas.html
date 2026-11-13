@@ -120,6 +120,10 @@
     </div>
   </div>
 
+  <div class="modal" id="editModal" role="dialog" aria-modal="true" aria-labelledby="editTitle">
+    <div class="modal-card"><h2 id="editTitle">Editar registro</h2><form id="editForm"><div id="editFields"></div><div class="modal-actions"><button type="button" id="cancelEdit" class="secondary">Cancelar</button><button class="primary">Guardar cambios</button></div></form></div>
+  </div>
+
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>
     const SUPABASE_URL = 'https://nwxjhedljwrcyznvowwq.supabase.co';
@@ -199,13 +203,13 @@
     }
     function movementTable(rows, full=true){
       if(!rows.length)return '<div class="empty">Todavía no hay movimientos.</div>';
-      return `<table><thead><tr><th>Fecha</th><th>Tipo</th><th>Concepto</th><th>Persona</th><th>Medio</th><th style="text-align:right">Importe</th></tr></thead><tbody>${rows.map(m=>`<tr><td>${esc(m.date)}</td><td><span class="badge ${m.type==='income'?'paid':'open'}">${m.type==='income'?'Cobro':'Gasto'}</span></td><td>${esc(m.description||m.category)}</td><td>${esc(contactName(m.contact_id))}</td><td>${methodName(m.payment_method)}</td><td class="amount">${m.type==='income'?'+':'−'}${ars(asCents(m.amount))}</td></tr>`).join('')}</tbody></table>`;
+      return `<table><thead><tr><th>Fecha</th><th>Tipo</th><th>Concepto</th><th>Persona</th><th>Medio</th><th style="text-align:right">Importe</th>${full?'<th>Acciones</th>':''}</tr></thead><tbody>${rows.map(m=>`<tr><td>${esc(m.date)}</td><td><span class="badge ${m.type==='income'?'paid':'open'}">${m.type==='income'?'Cobro':'Gasto'}</span></td><td>${esc(m.description||m.category)}</td><td>${esc(contactName(m.contact_id))}</td><td>${methodName(m.payment_method)}</td><td class="amount">${m.type==='income'?'+':'−'}${ars(asCents(m.amount))}</td>${full?`<td><div class="inline-actions"><button class="secondary" onclick="editRecord('movement','${m.id}')">Editar</button><button class="danger" onclick="deleteRecord('movement','${m.id}')">Borrar</button></div></td>`:''}</tr>`).join('')}</tbody></table>`;
     }
     function renderMovements(){
       const q=$('movementSearch').value.trim().toLowerCase(); const rows=state.movements.filter(m=>[m.description,m.category,contactName(m.contact_id)].join(' ').toLowerCase().includes(q)); $('movementTable').innerHTML=movementTable(rows);
     }
     function renderContacts(){
-      const rows=state.contacts; $('contactTable').innerHTML=rows.length?`<table><thead><tr><th>Nombre</th><th>Tipo</th><th>Teléfono</th><th>Nota</th></tr></thead><tbody>${rows.map(c=>`<tr><td><strong>${esc(c.name)}</strong></td><td>${c.kind==='both'?'Cliente y proveedor':c.kind==='supplier'?'Proveedor':'Cliente'}</td><td>${esc(c.phone||'—')}</td><td>${esc(c.note||'—')}</td></tr>`).join('')}</tbody></table>`:'<div class="empty">Todavía no hay clientes ni proveedores.</div>';
+      const rows=state.contacts; $('contactTable').innerHTML=rows.length?`<table><thead><tr><th>Nombre</th><th>Tipo</th><th>Teléfono</th><th>Nota</th><th>Acciones</th></tr></thead><tbody>${rows.map(c=>`<tr><td><strong>${esc(c.name)}</strong></td><td>${c.kind==='both'?'Cliente y proveedor':c.kind==='supplier'?'Proveedor':'Cliente'}</td><td>${esc(c.phone||'—')}</td><td>${esc(c.note||'—')}</td><td><div class="inline-actions"><button class="secondary" onclick="editRecord('contact','${c.id}')">Editar</button><button class="danger" onclick="deleteRecord('contact','${c.id}')">Borrar</button></div></td></tr>`).join('')}</tbody></table>`:'<div class="empty">Todavía no hay clientes ni proveedores.</div>';
     }
     function renderDebts(){
       const sums=paymentsByDebt(),filter=$('debtFilter').value,q=$('debtSearch').value.trim().toLowerCase();
@@ -213,7 +217,7 @@
         if(filter==='open'&&x.b===0)return false; if((filter==='receivable'||filter==='payable')&&x.d.direction!==filter)return false;
         return (contactName(x.d.contact_id)+' '+x.d.description).toLowerCase().includes(q);
       });
-      $('debtTable').innerHTML=rows.length?`<table><thead><tr><th>Persona</th><th>Tipo</th><th>Detalle</th><th>Fecha</th><th>Original</th><th>Pagado</th><th>Saldo</th><th></th></tr></thead><tbody>${rows.map(({d,paid,b})=>`<tr><td>${esc(contactName(d.contact_id))}</td><td>${d.direction==='receivable'?'Me deben':'Debo'}</td><td>${esc(d.description)}</td><td>${esc(d.due_date||'—')}</td><td>${ars(asCents(d.amount))}</td><td>${ars(paid)}</td><td><span class="badge ${b?'open':'paid'}">${ars(b)}</span></td><td>${b?`<button class="secondary" onclick="openPayment('${d.id}',${b})">Registrar abono</button>`:'Saldada'}</td></tr>`).join('')}</tbody></table>`:'<div class="empty">No hay cuentas que coincidan con el filtro.</div>';
+      $('debtTable').innerHTML=rows.length?`<table><thead><tr><th>Persona</th><th>Tipo</th><th>Detalle</th><th>Vencimiento</th><th>Original</th><th>Pagado</th><th>Saldo</th><th>Acciones</th></tr></thead><tbody>${rows.map(({d,paid,b})=>`<tr><td>${esc(contactName(d.contact_id))}</td><td>${d.direction==='receivable'?'Me deben':'Debo'}</td><td>${esc(d.description)}</td><td>${esc(d.due_date||'—')}</td><td>${ars(asCents(d.amount))}</td><td>${ars(paid)}</td><td><span class="badge ${b?'open':'paid'}">${ars(b)}</span></td><td><div class="inline-actions">${b?`<button class="secondary" onclick="openPayment('${d.id}',${b})">Abonar</button>`:''}<button class="secondary" onclick="editRecord('debt','${d.id}')">Editar</button><button class="danger" onclick="deleteRecord('debt','${d.id}')">Borrar</button></div></td></tr>`).join('')}</tbody></table>`:'<div class="empty">No hay cuentas que coincidan con el filtro.</div>';
     }
 
     $('movementForm').addEventListener('submit',async e=>{
@@ -247,6 +251,65 @@
       $('paymentModal').classList.remove('open'); showMessage('Abono registrado y saldo actualizado.'); await loadData();
     });
 
+    $('cancelEdit').addEventListener('click',()=>$('editModal').classList.remove('open'));
+    function editRecord(kind,id){
+      const record=kind==='movement'?state.movements.find(x=>x.id===id):kind==='contact'?state.contacts.find(x=>x.id===id):state.debts.find(x=>x.id===id);
+      if(!record)return;
+      $('editForm').dataset.kind=kind; $('editForm').dataset.id=id;
+      let fields='';
+      if(kind==='contact'){
+        $('editTitle').textContent='Editar contacto';
+        fields=`<label>Nombre</label><input name="name" required maxlength="120" value="${esc(record.name)}"><label>Tipo</label><select name="kind"><option value="customer" ${record.kind==='customer'?'selected':''}>Cliente</option><option value="supplier" ${record.kind==='supplier'?'selected':''}>Proveedor</option><option value="both" ${record.kind==='both'?'selected':''}>Cliente y proveedor</option></select><label>Teléfono</label><input name="phone" maxlength="40" value="${esc(record.phone||'')}"><label>Nota</label><input name="note" maxlength="240" value="${esc(record.note||'')}">`;
+      }else if(kind==='movement'){
+        $('editTitle').textContent='Editar movimiento';
+        const typeField=record.debt_id?`<label>Tipo</label><input value="${record.type==='income'?'Abono recibido':'Pago realizado'}" disabled><input name="type" type="hidden" value="${record.type}">`:`<label>Tipo</label><select name="type"><option value="income" ${record.type==='income'?'selected':''}>Cobro / ingreso</option><option value="expense" ${record.type==='expense'?'selected':''}>Gasto</option></select>`;
+        const contactField=record.debt_id?`<label>Persona asociada</label><input value="${esc(contactName(record.contact_id))}" disabled>`:`<label>Cliente/proveedor</label><select name="contact_id">${contactOptions(record.contact_id)}</select>`;
+        fields=`${typeField}<label>Importe ($ ARS)</label><input name="amount" type="number" min="0.01" step="0.01" required value="${Number(record.amount).toFixed(2)}"><label>Fecha</label><input name="date" type="date" required value="${esc(record.date)}"><label>Categoría</label><input name="category" maxlength="120" required value="${esc(record.category)}"><label>Medio de pago</label><select name="payment_method">${methodOptions(record.payment_method)}</select>${contactField}<label>Detalle</label><input name="description" maxlength="240" value="${esc(record.description||'')}">`;
+        if(record.debt_id)fields+=`<p class="hint">Este movimiento es un abono asociado a una cuenta; su tipo y persona se mantienen vinculados.</p>`;
+      }else{
+        $('editTitle').textContent='Editar cuenta corriente';
+        const paid=paymentsByDebt()[record.id]||0;
+        const direction=paid?`<label>Tipo de cuenta</label><input value="${record.direction==='receivable'?'Me deben':'Debo'}" disabled><input name="direction" type="hidden" value="${record.direction}"><p class="hint">No se cambia el tipo porque ya tiene abonos registrados.</p>`:`<label>Tipo de cuenta</label><select name="direction"><option value="receivable" ${record.direction==='receivable'?'selected':''}>Me deben</option><option value="payable" ${record.direction==='payable'?'selected':''}>Debo</option></select>`;
+        fields=`${direction}<label>Persona</label><select name="contact_id">${contactOptions(record.contact_id)}</select><label>Importe original ($ ARS)</label><input name="amount" type="number" min="${(paid/100).toFixed(2)}" step="0.01" required value="${Number(record.amount).toFixed(2)}"><label>Vencimiento</label><input name="due_date" type="date" value="${esc(record.due_date||'')}"><label>Detalle</label><input name="description" maxlength="240" required value="${esc(record.description)}"><p class="hint">El importe no puede ser menor a los abonos ya registrados (${ars(paid)}).</p>`;
+      }
+      $('editFields').innerHTML=fields; $('editModal').classList.add('open');
+    }
+    function contactOptions(selected){return '<option value="">Sin asociar</option>'+state.contacts.map(c=>`<option value="${c.id}" ${c.id===selected?'selected':''}>${esc(c.name)}</option>`).join('');}
+    function methodOptions(selected){return [['cash','Efectivo'],['transfer','Transferencia'],['debit','Débito'],['credit','Crédito'],['other','Otro']].map(([v,n])=>`<option value="${v}" ${v===selected?'selected':''}>${n}</option>`).join('');}
+    $('editForm').addEventListener('submit',async e=>{
+      e.preventDefault(); const kind=e.currentTarget.dataset.kind,id=e.currentTarget.dataset.id,form=new FormData(e.currentTarget); let table,changes;
+      if(kind==='contact'){
+        table='business_contacts'; changes={name:String(form.get('name')).trim(),kind:form.get('kind'),phone:String(form.get('phone')||'').trim()||null,note:String(form.get('note')||'').trim()||null};
+      }else if(kind==='movement'){
+        const original=state.movements.find(x=>x.id===id),amount=Number(form.get('amount'));
+        if(!(amount>0)){showMessage('El importe debe ser mayor a cero.',true);return;}
+        if(original.debt_id){const debt=state.debts.find(x=>x.id===original.debt_id);const others=(paymentsByDebt()[debt.id]||0)-asCents(original.amount);if(asCents(amount)+others>asCents(debt.amount)){showMessage('El total de abonos no puede superar el importe de la cuenta.',true);return;}}
+        table='business_movements'; changes={type:form.get('type'),amount:amount.toFixed(2),date:form.get('date'),category:String(form.get('category')).trim(),payment_method:form.get('payment_method'),contact_id:original.debt_id?original.contact_id:(form.get('contact_id')||null),description:String(form.get('description')||'').trim()||null};
+      }else{
+        const original=state.debts.find(x=>x.id===id),paid=paymentsByDebt()[id]||0,amount=Number(form.get('amount'));
+        if(!(amount>0)||asCents(amount)<paid){showMessage('El importe original no puede ser menor que los abonos ya registrados.',true);return;}
+        table='business_debts'; changes={direction:form.get('direction'),contact_id:form.get('contact_id')||null,amount:amount.toFixed(2),due_date:form.get('due_date')||null,description:String(form.get('description')).trim()};
+      }
+      const {error}=await db.from(table).update(changes).eq('id',id);
+      if(error){showMessage('No se pudo editar: '+error.message,true);return;}
+      $('editModal').classList.remove('open'); showMessage('Cambios guardados.'); await loadData();
+    });
+    async function deleteRecord(kind,id){
+      const record=kind==='movement'?state.movements.find(x=>x.id===id):kind==='contact'?state.contacts.find(x=>x.id===id):state.debts.find(x=>x.id===id);
+      if(!record)return;
+      const prompts={movement:'¿Borrar este movimiento? Si es un abono, el saldo de la cuenta aumentará.',contact:'¿Borrar este contacto? Se quitará su asociación de las cuentas y movimientos, pero se conservarán los importes e historial.',debt:'¿Borrar esta cuenta? Los abonos seguirán en el historial de caja, pero dejarán de estar vinculados a esta cuenta.'};
+      if(!confirm(prompts[kind]))return;
+      let error=null;
+      if(kind==='movement')({error}=await db.from('business_movements').delete().eq('id',id));
+      else if(kind==='debt'){
+        const detach=await db.from('business_movements').update({debt_id:null}).eq('debt_id',id); if(detach.error){error=detach.error;}else ({error}=await db.from('business_debts').delete().eq('id',id));
+      }else{
+        const debts=await db.from('business_debts').update({contact_id:null}).eq('contact_id',id); if(debts.error){error=debts.error;}else{const moves=await db.from('business_movements').update({contact_id:null}).eq('contact_id',id);if(moves.error){error=moves.error;}else ({error}=await db.from('business_contacts').delete().eq('id',id));}
+      }
+      if(error){showMessage('No se pudo borrar: '+error.message,true);return;}
+      showMessage('Registro borrado.'); await loadData();
+    }
+
     document.querySelectorAll('.tab').forEach(button=>button.addEventListener('click',()=>showPage(button.dataset.page)));
     document.querySelectorAll('[data-goto]').forEach(button=>button.addEventListener('click',()=>showPage(button.dataset.goto)));
     function showPage(name){document.querySelectorAll('.tab').forEach(b=>b.classList.toggle('active',b.dataset.page===name));document.querySelectorAll('.page').forEach(p=>p.classList.toggle('active',p.id===`page-${name}`));$('pageTitle').textContent=({dashboard:'Resumen',movements:'Cobros y gastos',contacts:'Clientes y proveedores',debts:'Cuentas corrientes'})[name]||'GAMAN';window.scrollTo({top:0,behavior:'smooth'});}
@@ -255,4 +318,3 @@
   </script>
 </body>
 </html>
-
