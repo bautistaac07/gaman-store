@@ -1,0 +1,61 @@
+const CACHE_NAME = 'gaman-pwa-v3';
+const APP_FILES = [
+  './',
+  './index.html',
+  './gaman-finanzas.html',
+  './manifest-tienda.webmanifest',
+  './manifest-finanzas.webmanifest',
+  './icono-tienda-192.png',
+  './icono-tienda-512.png',
+  './icono-finanzas-192.png',
+  './icono-finanzas-512.png'
+];
+
+self.addEventListener('install', event => {
+  event.waitUntil(caches.open(CACHE_NAME).then(cache => cache.addAll(APP_FILES)));
+  self.skipWaiting();
+});
+
+self.addEventListener('activate', event => {
+  event.waitUntil((async () => {
+    const names = await caches.keys();
+    await Promise.all(names.filter(name => name.startsWith('gaman-pwa-') && name !== CACHE_NAME).map(name => caches.delete(name)));
+    await self.clients.claim();
+  })());
+});
+
+self.addEventListener('fetch', event => {
+  const request = event.request;
+  const url = new URL(request.url);
+  if (request.method !== 'GET' || url.origin !== self.location.origin) return;
+
+  // Actualizar las páginas cuando hay conexión, con una copia guardada como respaldo.
+  if (request.mode === 'navigate') {
+    event.respondWith((async () => {
+      const cache = await caches.open(CACHE_NAME);
+      try {
+        const response = await fetch(request);
+        if (response.ok) cache.put(request, response.clone());
+        return response;
+      } catch {
+        return (await cache.match(request)) || (url.pathname.endsWith('/gaman-finanzas.html')
+          ? await cache.match('./gaman-finanzas.html')
+          : await cache.match('./index.html')) || Response.error();
+      }
+    })());
+    return;
+  }
+
+  // Solo se guardan los archivos de la aplicación. No se almacenan datos ni llamadas a Supabase.
+  const isAppFile = APP_FILES.some(path => new URL(path, self.registration.scope).href === url.href);
+  if (isAppFile) {
+    event.respondWith((async () => {
+      const cache = await caches.open(CACHE_NAME);
+      const saved = await cache.match(request);
+      if (saved) return saved;
+      const response = await fetch(request);
+      if (response.ok) cache.put(request, response.clone());
+      return response;
+    })());
+  }
+});
