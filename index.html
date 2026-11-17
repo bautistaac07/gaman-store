@@ -1043,6 +1043,7 @@
     let featuredRotationTimer = null;
     let featuredTransitionTimer = null;
     let featuredRenderedIds = [];
+    let featuredActionLastOpenedAt = 0;
 
     let categories = ['Todos', 'Remeras', 'Pantalones', 'Camperas', 'Accesorios'];
 
@@ -1323,11 +1324,14 @@
           const openProduct = event => {
             event.preventDefault();
             event.stopPropagation();
+            if (Date.now() - featuredActionLastOpenedAt < 700) return;
+            featuredActionLastOpenedAt = Date.now();
             pauseFeaturedRotation();
             openDetailModal(Number(button.dataset.productId));
           };
           button.addEventListener('pointerdown', pauseFeaturedRotation);
           button.addEventListener('touchstart', pauseFeaturedRotation, { passive: true });
+          button.addEventListener('touchend', openProduct, { passive: false });
           button.addEventListener('click', openProduct);
         });
         featuredRenderedIds = ids;
