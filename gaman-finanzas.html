@@ -4,6 +4,11 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#3a2a1c">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="GAMAN Caja">
+  <link rel="manifest" href="./manifest-finanzas.webmanifest">
+  <link rel="apple-touch-icon" href="./icono-finanzas-192.png">
   <title>GAMAN | Caja y cuentas</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -316,5 +321,7 @@
     $('movementSearch').addEventListener('input',renderMovements); $('debtSearch').addEventListener('input',renderDebts); $('debtFilter').addEventListener('change',renderDebts); $('refreshBtn').addEventListener('click',loadData);
     $('logoutBtn').addEventListener('click',async()=>{if(state.channel)await db.removeChannel(state.channel);await db.auth.signOut();});
   </script>
+  <script>if ('serviceWorker' in navigator) window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js').catch(() => {}));</script>
 </body>
 </html>
+
