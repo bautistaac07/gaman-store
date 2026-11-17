@@ -210,7 +210,7 @@
     .featured-eyebrow { color: var(--color-brown-warm); text-transform: uppercase; letter-spacing: .2em; font-size: .72rem; font-weight: 700; }
     .featured-title { color: var(--color-espresso); font: 600 clamp(1.8rem, 4vw, 2.8rem) var(--font-heading); margin: 7px 0; }
     .featured-subtitle { color: var(--color-brown-warm); margin: 0; font-size: .96rem; }
-    .featured-stage { position: relative; width: min(100%, 940px); height: 445px; margin: 18px auto 0; perspective: 1200px; touch-action: pan-y; }
+    .featured-stage { position: relative; width: min(100%, 940px); height: 445px; margin: 18px auto 0; perspective: 1200px; touch-action: pan-y; user-select: none; -webkit-user-select: none; }
     .featured-card {
       position: absolute; top: 18px; left: 50%; width: min(68vw, 310px); height: 390px;
       margin-left: max(-155px, -34vw); border: 1px solid #d6c0a3; border-radius: 18px;
@@ -222,6 +222,7 @@
     .featured-card[data-offset="-1"], .featured-card[data-offset="1"] { z-index: 3; opacity: .82; filter: saturate(.85); }
     .featured-card[data-offset="-2"], .featured-card[data-offset="2"] { z-index: 1; opacity: .48; filter: saturate(.7); }
     .featured-card.is-hidden { opacity: 0; pointer-events: none; }
+    .featured-card:not([data-offset="0"]) { pointer-events: none; }
     .featured-stage.is-moving .featured-card { pointer-events: none; }
     .featured-photo { height: 276px; background: #f7f3ed; display: grid; place-items: center; overflow: hidden; }
     .featured-photo img { width: 100%; height: 100%; display: block; }
@@ -229,21 +230,25 @@
     .featured-card-tag { color: var(--color-brown-warm); text-transform: uppercase; letter-spacing: .12em; font-size: .66rem; font-weight: 700; }
     .featured-card-name { color: var(--color-espresso); font: 600 1.08rem var(--font-heading); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin: 5px 0; }
     .featured-card-price { color: var(--color-brown-warm); font-weight: 700; font-size: .98rem; }
+    .featured-card-bottom { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-top: 4px; }
+    .featured-card-action { border: 1px solid var(--color-espresso); border-radius: 7px; padding: 7px 12px; background: var(--color-espresso); color: #fff; font: 600 .76rem var(--font-body); touch-action: manipulation; cursor: pointer; }
+    .featured-card-action:hover { background: var(--color-brown-warm); }
     .featured-controls { position: relative; z-index: 12; display: flex; justify-content: center; align-items: center; gap: 18px; margin-top: -2px; }
-    .featured-arrow { position: relative; z-index: 13; touch-action: manipulation; width: 42px; height: 42px; border: 1px solid var(--color-bronze); border-radius: 50%; background: #fffdfa; color: var(--color-espresso); font-size: 1.35rem; cursor: pointer; transition: var(--transition); }
+    .featured-arrow { position: relative; z-index: 13; touch-action: manipulation; width: 48px; height: 48px; border: 1px solid var(--color-bronze); border-radius: 50%; background: #fffdfa; color: var(--color-espresso); font-size: 1.45rem; cursor: pointer; transition: var(--transition); }
     .featured-arrow:hover { background: var(--color-espresso); color: #fff; }
     .featured-dots { display: flex; gap: 8px; align-items: center; }
-    .featured-dot { position: relative; z-index: 13; touch-action: manipulation; width: 8px; height: 8px; border: 0; border-radius: 50%; padding: 0; background: #b99a73aa; cursor: pointer; transition: var(--transition); }
-    .featured-dot.active { width: 24px; border-radius: 8px; background: var(--color-espresso); }
+    .featured-dot { position: relative; z-index: 13; display: grid; place-items: center; width: 28px; height: 36px; padding: 0; border: 0; background: transparent; touch-action: manipulation; cursor: pointer; }
+    .featured-dot::before { content: ''; display: block; width: 8px; height: 8px; border-radius: 8px; background: #b99a73aa; transition: var(--transition); }
+    .featured-dot.active::before { width: 24px; background: var(--color-espresso); }
     .featured-empty { display: none; text-align: center; color: var(--color-brown-warm); padding: 26px 12px; }
     @media (max-width: 600px) {
       .featured-section { padding: 40px 12px 46px; }
       .featured-stage { height: 385px; width: 100%; margin-top: 14px; }
-      .featured-card { top: 16px; width: min(70vw, 285px); height: 330px; margin-left: max(-142px, -35vw); }
-      .featured-photo { height: 222px; }
-      .featured-card-info { padding: 13px 15px; }
+      .featured-card { top: 16px; width: min(70vw, 285px); height: 345px; margin-left: max(-142px, -35vw); }
+      .featured-photo { height: 218px; }
+      .featured-card-info { padding: 12px 14px; }
       .featured-card-name { font-size: 1rem; }
-      .featured-arrow { width: 38px; height: 38px; }
+      .featured-arrow { width: 50px; height: 50px; }
     }
     @media (prefers-reduced-motion: reduce) { .featured-card { transition: none; } }
 
@@ -701,9 +706,9 @@
     <div class="featured-stage" id="featuredStage" aria-label="Productos destacados" onmouseenter="pauseFeaturedRotation()" onmouseleave="resumeFeaturedRotation()" onfocusin="pauseFeaturedRotation()" onfocusout="resumeFeaturedRotation()"></div>
     <div class="featured-empty" id="featuredEmpty">Próximamente, una selección especial de GAMAN.</div>
     <div class="featured-controls" id="featuredControls">
-      <button class="featured-arrow" type="button" aria-label="Producto anterior" onpointerdown="suppressFeaturedCardClick(event)" onclick="event.preventDefault();event.stopPropagation();stepFeatured(-1)">‹</button>
+      <button class="featured-arrow" type="button" aria-label="Producto anterior" onclick="event.preventDefault();event.stopPropagation();stepFeatured(-1)">‹</button>
       <div class="featured-dots" id="featuredDots" aria-label="Elegir producto destacado"></div>
-      <button class="featured-arrow" type="button" aria-label="Producto siguiente" onpointerdown="suppressFeaturedCardClick(event)" onclick="event.preventDefault();event.stopPropagation();stepFeatured(1)">›</button>
+      <button class="featured-arrow" type="button" aria-label="Producto siguiente" onclick="event.preventDefault();event.stopPropagation();stepFeatured(1)">›</button>
     </div>
   </section>
 
@@ -1038,7 +1043,6 @@
     let featuredRotationTimer = null;
     let featuredTransitionTimer = null;
     let featuredRenderedIds = [];
-    let featuredIgnoreCardClicksUntil = 0;
 
     let categories = ['Todos', 'Remeras', 'Pantalones', 'Camperas', 'Accesorios'];
 
@@ -1089,6 +1093,7 @@
     };
 
     window.addEventListener('DOMContentLoaded', async () => {
+      initFeaturedSwipeControls();
       loadFromLocalStorage();
       applySiteContentUI();
       renderCategoriesFilter();
@@ -1310,9 +1315,9 @@
       featuredIndex = ((featuredIndex % items.length) + items.length) % items.length;
       const ids = items.map(p => String(p.id));
       if (ids.join('|') !== featuredRenderedIds.join('|')) {
-        stage.innerHTML = items.map(p => `<article class="featured-card" data-product-id="${p.id}" aria-label="${p.name}" tabindex="0" onclick="openFeaturedProduct(${Number(p.id)}, event)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openFeaturedProduct(${Number(p.id)}, event)}">
+        stage.innerHTML = items.map(p => `<article class="featured-card" data-product-id="${p.id}" aria-label="${p.name}" tabindex="-1">
           <div class="featured-photo"><img alt="${p.name}" loading="lazy"></div>
-          <div class="featured-card-info"><div class="featured-card-tag"></div><h3 class="featured-card-name"></h3><div class="featured-card-price"></div></div>
+          <div class="featured-card-info"><div class="featured-card-tag"></div><h3 class="featured-card-name"></h3><div class="featured-card-bottom"><div class="featured-card-price"></div><button class="featured-card-action" type="button" tabindex="-1" onclick="event.stopPropagation();openDetailModal(${Number(p.id)})">Ver prenda</button></div></div>
         </article>`).join('');
         featuredRenderedIds = ids;
       }
@@ -1334,7 +1339,8 @@
         const zoom = fit === 'cover' ? (p.coverZoom ?? 1) : 1;
         card.classList.toggle('is-hidden', hidden);
         card.dataset.offset = String(offset);
-        card.tabIndex = hidden ? -1 : 0;
+        card.tabIndex = -1;
+        card.querySelector('.featured-card-action').tabIndex = offset === 0 ? 0 : -1;
         card.setAttribute('aria-label', p.name);
         card.style.zIndex = String(5 - abs);
         const nextTransform = `translateX(${x}%) translateZ(${z}px) rotateY(${ry}deg) scale(${scale})`;
@@ -1355,7 +1361,7 @@
         stage.classList.add('is-moving');
         featuredTransitionTimer = setTimeout(() => stage.classList.remove('is-moving'), 1150);
       }
-      dots.innerHTML = items.map((p, i) => `<button class="featured-dot ${i === featuredIndex ? 'active' : ''}" type="button" aria-label="Ver ${p.name}" onpointerdown="suppressFeaturedCardClick(event)" onclick="event.preventDefault();event.stopPropagation();goToFeatured(${i})"></button>`).join('');
+      dots.innerHTML = items.map((p, i) => `<button class="featured-dot ${i === featuredIndex ? 'active' : ''}" type="button" aria-label="Ver ${p.name}" onclick="event.preventDefault();event.stopPropagation();goToFeatured(${i})"></button>`).join('');
       resumeFeaturedRotation();
     }
 
@@ -1366,18 +1372,22 @@
       renderFeaturedCarousel();
     }
 
-    function suppressFeaturedCardClick(event) {
-      event.stopPropagation();
-      featuredIgnoreCardClicksUntil = Date.now() + 1250;
-    }
-
-    function openFeaturedProduct(id, event) {
-      if (Date.now() < featuredIgnoreCardClicksUntil) {
-        event?.preventDefault();
-        event?.stopPropagation();
-        return;
-      }
-      openDetailModal(id);
+    function initFeaturedSwipeControls() {
+      const stage = document.getElementById('featuredStage');
+      let start = null;
+      stage.addEventListener('pointerdown', event => {
+        if (event.target.closest('.featured-card-action') || event.button > 0) return;
+        start = { x: event.clientX, y: event.clientY, id: event.pointerId };
+        try { stage.setPointerCapture(event.pointerId); } catch (_) {}
+      });
+      stage.addEventListener('pointerup', event => {
+        if (!start || start.id !== event.pointerId) return;
+        const dx = event.clientX - start.x;
+        const dy = event.clientY - start.y;
+        start = null;
+        if (Math.abs(dx) > 42 && Math.abs(dx) > Math.abs(dy) * 1.25) stepFeatured(dx < 0 ? 1 : -1);
+      });
+      stage.addEventListener('pointercancel', () => { start = null; });
     }
 
     function goToFeatured(index) { featuredIndex = index; renderFeaturedCarousel(); }
