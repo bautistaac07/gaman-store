@@ -199,6 +199,53 @@
       display: block;
     }
 
+    /* Carrusel 3D de productos destacados */
+    .featured-section {
+      padding: 54px 20px 64px;
+      overflow: hidden;
+      background: linear-gradient(180deg, #f8f3ec 0%, #efe3d2 100%);
+      border-bottom: 1px solid var(--color-sand);
+    }
+    .featured-heading { text-align: center; max-width: 720px; margin: 0 auto 10px; }
+    .featured-eyebrow { color: var(--color-brown-warm); text-transform: uppercase; letter-spacing: .2em; font-size: .72rem; font-weight: 700; }
+    .featured-title { color: var(--color-espresso); font: 600 clamp(1.8rem, 4vw, 2.8rem) var(--font-heading); margin: 7px 0; }
+    .featured-subtitle { color: var(--color-brown-warm); margin: 0; font-size: .96rem; }
+    .featured-stage { position: relative; width: min(100%, 940px); height: 445px; margin: 18px auto 0; perspective: 1200px; touch-action: pan-y; }
+    .featured-card {
+      position: absolute; top: 18px; left: 50%; width: min(68vw, 310px); height: 390px;
+      margin-left: max(-155px, -34vw); border: 1px solid #d6c0a3; border-radius: 18px;
+      background: #fffdfa; overflow: hidden; box-shadow: 0 18px 44px #3a2a1c22;
+      transform-style: preserve-3d; transition: transform 1.05s cubic-bezier(.22,.8,.2,1), opacity .8s ease, filter .8s ease;
+      will-change: transform, opacity; cursor: pointer;
+    }
+    .featured-card[data-offset="0"] { z-index: 5; opacity: 1; filter: none; }
+    .featured-card[data-offset="-1"], .featured-card[data-offset="1"] { z-index: 3; opacity: .82; filter: saturate(.85); }
+    .featured-card[data-offset="-2"], .featured-card[data-offset="2"] { z-index: 1; opacity: .48; filter: saturate(.7); }
+    .featured-card.is-hidden { opacity: 0; pointer-events: none; }
+    .featured-photo { height: 276px; background: #f7f3ed; display: grid; place-items: center; overflow: hidden; }
+    .featured-photo img { width: 100%; height: 100%; display: block; }
+    .featured-card-info { padding: 16px 18px 18px; text-align: left; }
+    .featured-card-tag { color: var(--color-brown-warm); text-transform: uppercase; letter-spacing: .12em; font-size: .66rem; font-weight: 700; }
+    .featured-card-name { color: var(--color-espresso); font: 600 1.08rem var(--font-heading); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin: 5px 0; }
+    .featured-card-price { color: var(--color-brown-warm); font-weight: 700; font-size: .98rem; }
+    .featured-controls { display: flex; justify-content: center; align-items: center; gap: 18px; margin-top: -2px; }
+    .featured-arrow { width: 42px; height: 42px; border: 1px solid var(--color-bronze); border-radius: 50%; background: #fffdfa; color: var(--color-espresso); font-size: 1.35rem; cursor: pointer; transition: var(--transition); }
+    .featured-arrow:hover { background: var(--color-espresso); color: #fff; }
+    .featured-dots { display: flex; gap: 8px; align-items: center; }
+    .featured-dot { width: 8px; height: 8px; border: 0; border-radius: 50%; padding: 0; background: #b99a73aa; cursor: pointer; transition: var(--transition); }
+    .featured-dot.active { width: 24px; border-radius: 8px; background: var(--color-espresso); }
+    .featured-empty { display: none; text-align: center; color: var(--color-brown-warm); padding: 26px 12px; }
+    @media (max-width: 600px) {
+      .featured-section { padding: 40px 12px 46px; }
+      .featured-stage { height: 385px; width: 100%; margin-top: 14px; }
+      .featured-card { top: 16px; width: min(70vw, 285px); height: 330px; margin-left: max(-142px, -35vw); }
+      .featured-photo { height: 222px; }
+      .featured-card-info { padding: 13px 15px; }
+      .featured-card-name { font-size: 1rem; }
+      .featured-arrow { width: 38px; height: 38px; }
+    }
+    @media (prefers-reduced-motion: reduce) { .featured-card { transition: none; } }
+
     /* Catálogo Cliente */
     .catalog-section {
       max-width: 1200px;
@@ -644,6 +691,21 @@
     </div>
   </section>
 
+  <section class="featured-section" id="featuredSection">
+    <div class="featured-heading">
+      <div class="featured-eyebrow">Una selección para vos</div>
+      <h2 class="featured-title" id="featuredTitleUI">Destacados GAMAN</h2>
+      <p class="featured-subtitle" id="featuredSubtitleUI">Novedades y prendas elegidas de la colección</p>
+    </div>
+    <div class="featured-stage" id="featuredStage" aria-label="Productos destacados" onmouseenter="pauseFeaturedRotation()" onmouseleave="resumeFeaturedRotation()" onfocusin="pauseFeaturedRotation()" onfocusout="resumeFeaturedRotation()"></div>
+    <div class="featured-empty" id="featuredEmpty">Próximamente, una selección especial de GAMAN.</div>
+    <div class="featured-controls" id="featuredControls">
+      <button class="featured-arrow" type="button" aria-label="Producto anterior" onclick="stepFeatured(-1)">‹</button>
+      <div class="featured-dots" id="featuredDots" aria-label="Elegir producto destacado"></div>
+      <button class="featured-arrow" type="button" aria-label="Producto siguiente" onclick="stepFeatured(1)">›</button>
+    </div>
+  </section>
+
   <!-- Cliente (Catálogo) -->
   <main class="catalog-section">
     <div class="controls-bar">
@@ -662,6 +724,7 @@
       <div style="display: flex; gap: 10px; flex-wrap: wrap;">
         <button class="btn-primary" onclick="openProductModal()">+ Agregar Producto</button>
         <button class="btn-secondary" onclick="openCategoriesModal()">📁 Categorías</button>
+        <button class="btn-secondary" onclick="openFeaturedEditModal()">✨ Editar Carrusel</button>
         <button class="btn-secondary" onclick="openHeroEditModal()">✏️ Editar Hero &amp; Banner</button>
         <button class="btn-secondary" onclick="openFooterEditModal()">📌 Editar Footer</button>
       </div>
@@ -850,6 +913,28 @@
     </div>
   </div>
 
+  <!-- Modal Carrusel de Destacados -->
+  <div class="modal-overlay" id="featuredEditModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 style="color: var(--color-espresso);">Editar Carrusel 3D</h3>
+        <button class="close-modal" onclick="closeModal('featuredEditModal')">&times;</button>
+      </div>
+      <form onsubmit="saveFeaturedSettings(event)">
+        <div class="form-group"><label for="editFeaturedTitle">Título</label><input id="editFeaturedTitle" maxlength="70" placeholder="Destacados GAMAN"></div>
+        <div class="form-group"><label for="editFeaturedSubtitle">Texto pequeño</label><input id="editFeaturedSubtitle" maxlength="120" placeholder="Novedades y prendas elegidas de la colección"></div>
+        <div class="form-group"><label style="display:flex;align-items:center;gap:9px"><input id="editFeaturedEnabled" type="checkbox" style="width:auto"> Mostrar carrusel en la tienda</label></div>
+        <div class="form-group"><label style="display:flex;align-items:center;gap:9px"><input id="editFeaturedAutoplay" type="checkbox" style="width:auto"> Girar automáticamente</label><small style="color:var(--color-brown-warm)">El giro se pausa cuando alguien apunta o navega el carrusel.</small></div>
+        <div class="form-group">
+          <label>Elegí hasta 7 productos para destacar</label>
+          <p style="font-size:.82rem;margin:0 0 10px">Si no seleccionás ninguno, se mostrarán automáticamente los últimos productos agregados.</p>
+          <div id="featuredProductChoices" style="display:grid;gap:8px;max-height:240px;overflow:auto;padding:4px"></div>
+        </div>
+        <button type="submit" class="btn-primary" style="width:100%">Guardar Carrusel</button>
+      </form>
+    </div>
+  </div>
+
   <!-- Modal Editar Hero -->
   <div class="modal-overlay" id="heroEditModal">
     <div class="modal-content">
@@ -948,6 +1033,9 @@
     let sellerPassword = '';
     let sellerPhone = '5493811234567';
     let activeCategory = 'Todos';
+    let featuredIndex = 0;
+    let featuredRotationTimer = null;
+    let featuredRenderedIds = [];
 
     let categories = ['Todos', 'Remeras', 'Pantalones', 'Camperas', 'Accesorios'];
 
@@ -989,7 +1077,12 @@
       footerDesc: 'Indumentaria urbana contemporánea. Diseñada para resaltar la fuerza interior con simplicidad estética.',
       footerWsp: 'WhatsApp: +54 9 11 2345-6789',
       footerEmail: 'Email: hola@gamanstore.com',
-      footerCopyright: '© 2026 GAMAN Store. Todos los derechos reservados.'
+      footerCopyright: '© 2026 GAMAN Store. Todos los derechos reservados.',
+      featuredTitle: 'Destacados GAMAN',
+      featuredSubtitle: 'Novedades y prendas elegidas de la colección',
+      featuredProductIds: [],
+      featuredEnabled: true,
+      featuredAutoplay: true
     };
 
     window.addEventListener('DOMContentLoaded', async () => {
@@ -1092,6 +1185,8 @@
       document.getElementById('footerWspUI').innerText = siteContent.footerWsp;
       document.getElementById('footerEmailUI').innerText = siteContent.footerEmail;
       document.getElementById('footerCopyrightUI').innerText = siteContent.footerCopyright;
+      document.getElementById('featuredTitleUI').innerText = siteContent.featuredTitle || 'Destacados GAMAN';
+      document.getElementById('featuredSubtitleUI').innerText = siteContent.featuredSubtitle || 'Novedades y prendas elegidas de la colección';
     }
 
     function handleViewModeClick() {
@@ -1183,6 +1278,129 @@
           </div>
         </div>
       `).join('');
+      renderFeaturedCarousel();
+    }
+
+    function getFeaturedProducts() {
+      const selectedIds = (siteContent.featuredProductIds || []).map(String).filter(id => products.some(p => String(p.id) === id));
+      if (selectedIds.length) return products.filter(p => selectedIds.includes(String(p.id))).slice(0, 7);
+      return products.slice().reverse().slice(0, 5);
+    }
+
+    function renderFeaturedCarousel() {
+      const section = document.getElementById('featuredSection');
+      if (!section) return;
+      section.style.display = siteContent.featuredEnabled === false ? 'none' : '';
+      const stage = document.getElementById('featuredStage');
+      const dots = document.getElementById('featuredDots');
+      const controls = document.getElementById('featuredControls');
+      const empty = document.getElementById('featuredEmpty');
+      const items = getFeaturedProducts();
+      clearInterval(featuredRotationTimer);
+      featuredRotationTimer = null;
+      if (!items.length) {
+        stage.replaceChildren(); featuredRenderedIds = []; dots.replaceChildren(); controls.style.display = 'none'; empty.style.display = 'block';
+        return;
+      }
+      empty.style.display = 'none';
+      controls.style.display = items.length > 1 ? 'flex' : 'none';
+      featuredIndex = ((featuredIndex % items.length) + items.length) % items.length;
+      const ids = items.map(p => String(p.id));
+      if (ids.join('|') !== featuredRenderedIds.join('|')) {
+        stage.innerHTML = items.map(p => `<article class="featured-card" data-product-id="${p.id}" aria-label="${p.name}" tabindex="0" onclick="openDetailModal(${Number(p.id)})" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openDetailModal(${Number(p.id)})}">
+          <div class="featured-photo"><img alt="${p.name}" loading="lazy"></div>
+          <div class="featured-card-info"><div class="featured-card-tag"></div><h3 class="featured-card-name"></h3><div class="featured-card-price"></div></div>
+        </article>`).join('');
+        featuredRenderedIds = ids;
+      }
+      const cards = new Map(Array.from(stage.children, card => [card.dataset.productId, card]));
+      items.forEach((p, index) => {
+        const card = cards.get(String(p.id));
+        let offset = (index - featuredIndex + items.length) % items.length;
+        if (offset > items.length / 2) offset -= items.length;
+        const abs = Math.abs(offset);
+        const x = offset * 72;
+        const z = abs === 0 ? 55 : -abs * 105;
+        const ry = offset === 0 ? 0 : offset * -19;
+        const scale = abs === 0 ? 1 : Math.max(.58, 1 - abs * .15);
+        const hidden = abs > 2;
+        const image = p.image || (p.images || [])[p.coverIndex || 0] || 'https://via.placeholder.com/600x700?text=GAMAN';
+        const fit = p.imageFit || 'contain';
+        const position = fit === 'cover' ? `${p.coverX ?? 50}% ${p.coverY ?? 50}%` : 'center';
+        const zoom = fit === 'cover' ? (p.coverZoom ?? 1) : 1;
+        card.classList.toggle('is-hidden', hidden);
+        card.dataset.offset = String(offset);
+        card.tabIndex = hidden ? -1 : 0;
+        card.setAttribute('aria-label', p.name);
+        card.style.zIndex = String(5 - abs);
+        card.style.transform = `translateX(${x}%) translateZ(${z}px) rotateY(${ry}deg) scale(${scale})`;
+        const img = card.querySelector('img');
+        if (img.src !== image) img.src = image;
+        img.alt = p.name;
+        img.style.objectFit = fit;
+        img.style.objectPosition = position;
+        img.style.transform = `scale(${zoom})`;
+        card.querySelector('.featured-card-tag').textContent = `${p.category || 'GAMAN'} · DESTACADO`;
+        card.querySelector('.featured-card-name').textContent = p.name;
+        card.querySelector('.featured-card-price').textContent = `$${Number(p.price || 0).toLocaleString('es-AR')}`;
+      });
+      dots.innerHTML = items.map((p, i) => `<button class="featured-dot ${i === featuredIndex ? 'active' : ''}" type="button" aria-label="Ver ${p.name}" onclick="goToFeatured(${i})"></button>`).join('');
+      resumeFeaturedRotation();
+    }
+
+    function stepFeatured(direction) {
+      const items = getFeaturedProducts();
+      if (items.length < 2) return;
+      featuredIndex = (featuredIndex + direction + items.length) % items.length;
+      renderFeaturedCarousel();
+    }
+
+    function goToFeatured(index) { featuredIndex = index; renderFeaturedCarousel(); }
+
+    function pauseFeaturedRotation() {
+      clearInterval(featuredRotationTimer);
+      featuredRotationTimer = null;
+    }
+
+    function resumeFeaturedRotation() {
+      clearInterval(featuredRotationTimer);
+      featuredRotationTimer = null;
+      if (siteContent.featuredEnabled === false || siteContent.featuredAutoplay === false || getFeaturedProducts().length < 2 || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      featuredRotationTimer = setInterval(() => stepFeatured(1), 4800);
+    }
+
+    function openFeaturedEditModal() {
+      document.getElementById('editFeaturedTitle').value = siteContent.featuredTitle || '';
+      document.getElementById('editFeaturedSubtitle').value = siteContent.featuredSubtitle || '';
+      document.getElementById('editFeaturedEnabled').checked = siteContent.featuredEnabled !== false;
+      document.getElementById('editFeaturedAutoplay').checked = siteContent.featuredAutoplay !== false;
+      renderFeaturedProductChoices();
+      document.getElementById('featuredEditModal').style.display = 'flex';
+    }
+
+    function renderFeaturedProductChoices() {
+      const list = document.getElementById('featuredProductChoices');
+      const selected = new Set((siteContent.featuredProductIds || []).map(String));
+      if (!products.length) { list.innerHTML = '<p style="color:var(--color-brown-warm)">Agregá productos primero para elegirlos.</p>'; return; }
+      list.innerHTML = products.map(p => `<label style="display:flex;align-items:center;gap:10px;padding:9px 10px;border:1px solid var(--color-sand);border-radius:8px;background:#fff;cursor:pointer;margin:0"><input type="checkbox" class="featured-product-choice" value="${p.id}" ${selected.has(String(p.id)) ? 'checked' : ''} style="width:auto"><span style="flex:1">${p.name}</span><small style="color:var(--color-brown-warm)">$${Number(p.price || 0).toLocaleString('es-AR')}</small></label>`).join('');
+      list.querySelectorAll('.featured-product-choice').forEach(input => input.addEventListener('change', () => {
+        const checked = list.querySelectorAll('.featured-product-choice:checked');
+        if (checked.length > 7) { input.checked = false; alert('Podés destacar hasta 7 productos.'); }
+      }));
+    }
+
+    async function saveFeaturedSettings(event) {
+      event.preventDefault();
+      siteContent.featuredTitle = document.getElementById('editFeaturedTitle').value.trim() || 'Destacados GAMAN';
+      siteContent.featuredSubtitle = document.getElementById('editFeaturedSubtitle').value.trim();
+      siteContent.featuredEnabled = document.getElementById('editFeaturedEnabled').checked;
+      siteContent.featuredAutoplay = document.getElementById('editFeaturedAutoplay').checked;
+      siteContent.featuredProductIds = Array.from(document.querySelectorAll('.featured-product-choice:checked')).map(input => input.value);
+      if (!(await saveStoreSettingsToCloud())) return;
+      applySiteContentUI();
+      renderFeaturedCarousel();
+      closeModal('featuredEditModal');
+      alert('Carrusel guardado y sincronizado en todos tus dispositivos.');
     }
 
     function openDetailModal(id) {
