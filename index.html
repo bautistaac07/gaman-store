@@ -1319,6 +1319,17 @@
           <div class="featured-photo"><img alt="${p.name}" loading="lazy"></div>
           <div class="featured-card-info"><div class="featured-card-tag"></div><h3 class="featured-card-name"></h3><div class="featured-card-bottom"><div class="featured-card-price"></div><button class="featured-card-action" type="button" tabindex="-1" data-product-id="${Number(p.id)}">Ver prenda</button></div></div>
         </article>`).join('');
+        stage.querySelectorAll('.featured-card-action').forEach(button => {
+          const openProduct = event => {
+            event.preventDefault();
+            event.stopPropagation();
+            pauseFeaturedRotation();
+            openDetailModal(Number(button.dataset.productId));
+          };
+          button.addEventListener('pointerdown', pauseFeaturedRotation);
+          button.addEventListener('touchstart', pauseFeaturedRotation, { passive: true });
+          button.addEventListener('click', openProduct);
+        });
         featuredRenderedIds = ids;
       }
       const cards = new Map(Array.from(stage.children, card => [card.dataset.productId, card]));
@@ -1375,16 +1386,9 @@
     function initFeaturedSwipeControls() {
       const stage = document.getElementById('featuredStage');
       let start = null;
-      stage.addEventListener('click', event => {
-        const button = event.target.closest('.featured-card-action');
-        if (!button) return;
-        event.preventDefault();
-        event.stopPropagation();
-        pauseFeaturedRotation();
-        openDetailModal(Number(button.dataset.productId));
-      });
       stage.addEventListener('pointerdown', event => {
-        if (event.target.closest('.featured-card-action') || event.button > 0) return;
+        if (event.target.closest('.featured-card-action')) { pauseFeaturedRotation(); return; }
+        if (event.button > 0) return;
         start = { x: event.clientX, y: event.clientY, id: event.pointerId };
         try { stage.setPointerCapture(event.pointerId); } catch (_) {}
       });
